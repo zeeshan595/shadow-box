@@ -106,9 +106,7 @@ async function resetItems() {
     "Are you sure you want to reset magic items to default items from core shadow dark book?";
   if (confirm(RESET_TEXT)) {
     await ItemsCollection.clear();
-    await ItemsCollection.setMany(
-      CoreItems.magic.map((item) => ({ uuid: v4(), ...item }))
-    );
+    await ItemsCollection.setMany(CoreItems.magic);
     ItemsCollection.getAll().then((i) => (items.value = i));
   }
 }

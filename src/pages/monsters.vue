@@ -65,12 +65,7 @@ async function resetMonsters() {
     "Are you sure you want to reset monsters list to monsters from shadow dark's core rule book?";
   if (confirm(RESET_TEXT)) {
     await MonstersCollection.clear();
-    await MonstersCollection.setMany(
-      CoreMonsters.core.map((monster) => ({
-        uuid: v4(),
-        ...monster,
-      }))
-    );
+    await MonstersCollection.setMany(CoreMonsters.core);
     MonstersCollection.getAll().then((m) => (monsters.value = m));
   }
 }
