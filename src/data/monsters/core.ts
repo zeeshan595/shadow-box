@@ -3746,7 +3746,7 @@ export const monsters: Monster[] = [
     }
   },
   {
-    name: "   RAT, DIRE",
+    name: "RAT, DIRE",
     flavourText: "Child-sized, savage rats bristling with bony face and spine ridges.",
     alignment: "N",
     level: "2",
