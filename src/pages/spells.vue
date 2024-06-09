@@ -194,7 +194,7 @@ async function upload(data: any[] | null) {
       <div
         v-for="spell in filteredSpells"
         class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
-        style="max-width: 340px"
+        style="max-width: 320px"
       >
         <div class="flex-row gap20">
           <span

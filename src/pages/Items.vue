@@ -8,7 +8,6 @@ import { v4 } from "uuid";
 import { createItem, items as CoreItems, cloneItem } from "@/data";
 import TopBar from "@/components/top-bar.vue";
 import Button from "@/components/button.vue";
-import TextField from "@/components/text-field.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
