@@ -10,6 +10,7 @@ import TopBar from "@/components/top-bar.vue";
 import Button from "@/components/button.vue";
 import TextField from "@/components/text-field.vue";
 import Modal from "@/components/modal.vue";
+import ItemComponent from "@/components/item.vue";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -180,24 +181,7 @@ onMounted(() => {
     v-model="isRandomModalShown"
     title="random magic item"
   >
-    <span class="bold uppercase">{{ randomMagicItem.name }}</span>
-    <span class="italic font-small">{{ randomMagicItem.flavourText }}</span>
-    <span v-if="randomMagicItem.bonus">
-      <span class="font-small bold uppercase">bonus: </span>
-      {{ randomMagicItem.bonus }}
-    </span>
-    <span v-if="randomMagicItem.benefit">
-      <span class="font-small bold uppercase">benefit: </span>
-      {{ randomMagicItem.benefit }}
-    </span>
-    <span v-if="randomMagicItem.curse">
-      <span class="font-small bold uppercase">curse: </span>
-      {{ randomMagicItem.curse }}
-    </span>
-    <span v-if="randomMagicItem.personality">
-      <span class="font-small bold uppercase">personality: </span>
-      {{ randomMagicItem.personality }}
-    </span>
+    <ItemComponent :value="randomMagicItem" />
   </Modal>
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">magic items</h2>
@@ -221,24 +205,7 @@ onMounted(() => {
             delete
           </span>
         </div>
-        <span class="bold uppercase">{{ item.name }}</span>
-        <span class="italic font-small">{{ item.flavourText }}</span>
-        <span v-if="item.bonus">
-          <span class="font-small bold uppercase">bonus: </span>
-          {{ item.bonus }}
-        </span>
-        <span v-if="item.benefit">
-          <span class="font-small bold uppercase">benefit: </span>
-          {{ item.benefit }}
-        </span>
-        <span v-if="item.curse">
-          <span class="font-small bold uppercase">curse: </span>
-          {{ item.curse }}
-        </span>
-        <span v-if="item.personality">
-          <span class="font-small bold uppercase">personality: </span>
-          {{ item.personality }}
-        </span>
+        <ItemComponent :value="item" />
       </div>
     </div>
   </div>
