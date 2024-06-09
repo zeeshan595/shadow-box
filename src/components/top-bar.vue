@@ -2,6 +2,7 @@
 import router from "@/router";
 import Button from "./button.vue";
 import Search from "./search.vue";
+import { isMobileView } from "@/const";
 
 const props = defineProps<{
   modelValue: string;
@@ -78,7 +79,10 @@ async function upload() {
 </script>
 
 <template>
-  <div class="top-bar flex-row gap20 bg-default p20">
+  <div
+    class="top-bar flex-row gap20 bg-default p20"
+    :class="{ 'mobile-view': isMobileView }"
+  >
     <Button @click="() => router.push('/')">
       <span class="material-symbols-outlined"> arrow_back </span>
     </Button>
@@ -110,5 +114,9 @@ async function upload() {
   top: 0;
   box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.3);
   z-index: 100;
+}
+.mobile-view {
+  position: relative;
+  flex-wrap: wrap;
 }
 </style>

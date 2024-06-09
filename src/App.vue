@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { theme } from "./theme";
 import "./services/db/index";
+import { windowWidth } from "./const";
 
+onMounted(() => {
+  // set window width size to current window width
+  windowWidth.value = window.innerWidth;
+  // if window size changes then update window width size
+  window.addEventListener("resize", () => {
+    windowWidth.value = window.innerWidth;
+  });
+});
 const styleVariables = computed(() => ({
   "--bg-default": theme.value.background.default,
   "--bg-paper": theme.value.background.paper,
