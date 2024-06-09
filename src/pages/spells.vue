@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { spells as CoreSpells } from "@/data";
+import {
+  spells as CoreSpells,
+  cloneSpell,
+  createSpell as createNewSpell,
+} from "@/data";
 import type { Spell, SpellClass } from "@/data/spells/type";
+import type { WithUUID } from "@/services/db";
+import { SpellsCollection } from "@/services/db/collections";
+import { randomRange } from "@/services/helpers";
+import { v4 } from "uuid";
 import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
 import Button from "@/components/button.vue";
 import SpellComponent from "@/components/spell.vue";
-import type { WithUUID } from "@/services/db";
-import { SpellsCollection } from "@/services/db/collections";
+import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
-import { randomRange } from "@/services/helpers";
-import { v4 } from "uuid";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -92,6 +97,42 @@ async function deleteSpell(spell: WithUUID<Spell>) {
     spells.value = spells.value.filter((s) => spell.uuid !== s.uuid);
   }
 }
+
+const isEditSpellShown = ref(false);
+const editSpell = ref<WithUUID<Spell>>();
+function pickSpellToEdit(spell: WithUUID<Spell>) {
+  editSpell.value = spell;
+  isEditSpellShown.value = true;
+}
+async function editSpellFinish() {
+  if (!editSpell.value) return;
+  await SpellsCollection.set(editSpell.value.uuid, cloneSpell(editSpell.value));
+  const spellIndex = spells.value.findIndex(
+    (s) => s.uuid === editSpell.value!.uuid
+  );
+  if (spellIndex < 0) return;
+  spells.value[spellIndex] = editSpell.value;
+  isEditSpellShown.value = false;
+}
+
+const isCreateSpellShown = ref(false);
+const createSpell = ref<WithUUID<Spell>>();
+function showCreateSpell() {
+  createSpell.value = {
+    uuid: v4(),
+    ...createNewSpell(),
+  };
+  isCreateSpellShown.value = true;
+}
+async function createSpellFinish() {
+  if (!createSpell.value) return;
+  await SpellsCollection.set(
+    createSpell.value.uuid,
+    cloneSpell(createSpell.value)
+  );
+  spells.value.push(createSpell.value);
+  isCreateSpellShown.value = false;
+}
 </script>
 
 <template>
@@ -102,26 +143,44 @@ async function deleteSpell(spell: WithUUID<Spell>) {
     </div>
     <div class="gap10" style="align-self: center">
       <div class="font-small uppercase bold">Classes</div>
-      <Checkbox label="Priest" v-model="randomSpellPicker.classes.priest" />
-      <Checkbox label="Wizard" v-model="randomSpellPicker.classes.wizard" />
-      <Checkbox label="Seer" v-model="randomSpellPicker.classes.seer" />
-      <Checkbox label="Ovate" v-model="randomSpellPicker.classes.ovate" />
-      <Checkbox label="Shamanic" v-model="randomSpellPicker.classes.shamanic" />
+      <div class="flex-row gap10">
+        <Checkbox label="Priest" v-model="randomSpellPicker.classes.priest" />
+        <Checkbox label="Wizard" v-model="randomSpellPicker.classes.wizard" />
+      </div>
+      <div class="flex-row gap10">
+        <Checkbox label="Seer" v-model="randomSpellPicker.classes.seer" />
+        <Checkbox label="Ovate" v-model="randomSpellPicker.classes.ovate" />
+      </div>
+      <div class="flex-row gap10">
+        <Checkbox
+          label="Shamanic"
+          v-model="randomSpellPicker.classes.shamanic"
+        />
+        <Checkbox label="Witch" v-model="randomSpellPicker.classes.witch" />
+      </div>
       <Checkbox
         label="Grave Warden"
         v-model="randomSpellPicker.classes.graveWarden"
       />
-      <Checkbox label="Witch" v-model="randomSpellPicker.classes.witch" />
     </div>
     <Button @click="pickRandomSpell">Get Random Spell</Button>
   </Modal>
   <Modal v-if="randomSpell" v-model="isRandomSpellShown" title="Random Spell">
     <SpellComponent :model-value="randomSpell" />
   </Modal>
+  <Modal v-if="editSpell" v-model="isEditSpellShown" title="Edit Spell">
+    <SpellEditComponent v-model="editSpell" />
+    <Button @click="editSpellFinish">Save Spell</Button>
+  </Modal>
+  <Modal v-if="createSpell" v-model="isCreateSpellShown" title="Create Spell">
+    <SpellEditComponent v-model="createSpell" />
+    <Button @click="createSpellFinish">Create Spell</Button>
+  </Modal>
   <TopBar
     v-model="search"
     @random="() => (isRandomSpellPickerShown = true)"
     @reset="resetSpells"
+    @add="showCreateSpell"
   />
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">spells</h2>
@@ -132,7 +191,12 @@ async function deleteSpell(spell: WithUUID<Spell>) {
         style="max-width: 340px"
       >
         <div class="flex-row gap20">
-          <span class="material-symbols-outlined pointer"> edit</span>
+          <span
+            class="material-symbols-outlined pointer"
+            @click="() => pickSpellToEdit(spell)"
+          >
+            edit</span
+          >
           <span
             class="material-symbols-outlined pointer"
             @click="() => deleteSpell(spell)"

@@ -107,7 +107,7 @@ export const spells: Spell[] = [
     text: "A putrid cloud of yellow poison fills a near-sized cube within range. It spreads around corners.\n\nCreatures inside the cloud are blinded and take 2d6 damage at the beginning of their turns.\n\nA creature of LV 9 or less that ends its turn fully inside the cloud dies."
   },
   {
-    name: "  COMMAND",
+    name: "COMMAND",
     tier: 3,
     class: { priest: true },
     duration: 'Focus',
