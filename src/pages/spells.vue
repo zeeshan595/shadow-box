@@ -82,7 +82,8 @@ function pickRandomSpell() {
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="spell in filteredSpells"
-        class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10"
+        class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
+        style="max-width: 340px"
       >
         <span class="bold uppercase">{{ spell.name }}</span>
         <span>

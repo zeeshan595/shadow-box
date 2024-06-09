@@ -57,7 +57,7 @@ function leftClick(e: MouseEvent) {
     <input
       v-if="!props.large"
       type="text"
-      class="bg-paper shadow text-primary"
+      class="bg-paper shadow text-primary flex-shrink flex-basis-100"
       :class="{ 'no-input': props.readonly }"
       :value="modelValue"
       @change="onChange"
@@ -78,8 +78,6 @@ function leftClick(e: MouseEvent) {
 
 <style scoped lang="scss">
 .text-field {
-  min-width: 100px;
-
   .label {
     font-size: 12px;
     font-weight: bold;
@@ -101,7 +99,7 @@ function leftClick(e: MouseEvent) {
   }
   textarea {
     height: 100%;
-    height: 100%;
+    min-height: 100px;
     resize: none;
   }
   .mobile-view {
@@ -125,6 +123,7 @@ function leftClick(e: MouseEvent) {
       width: 45px;
       padding: 20px;
       text-align: center;
+      flex-grow: 0;
     }
 
     &.small {

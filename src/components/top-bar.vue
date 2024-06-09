@@ -10,6 +10,7 @@ const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "random"): void;
   (e: "add"): void;
+  (e: "reset"): void;
 }>();
 </script>
 
@@ -18,8 +19,14 @@ const emits = defineEmits<{
     <Button @click="() => router.push('/')">
       <span class="material-symbols-outlined"> arrow_back </span>
     </Button>
+    <Button @click="() => emits('add')">
+      <span class="material-symbols-outlined"> add </span>
+    </Button>
     <Button @click="() => emits('random')">
       <span class="material-symbols-outlined"> casino </span>
+    </Button>
+    <Button @click="() => emits('reset')">
+      <span class="material-symbols-outlined"> remove_selection </span>
     </Button>
     <Search
       :modelValue="props.modelValue"

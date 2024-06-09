@@ -52,7 +52,7 @@ const isShowingRandomMonsterModal = ref(false);
 function picRandomMoster() {
   const minLevel = stringToNum(randomMosterOptions.value.min);
   const maxLevel = stringToNum(randomMosterOptions.value.max);
-  console.log(minLevel, maxLevel)
+  console.log(minLevel, maxLevel);
   isShowingRandomMonsterModal.value = false;
   const filteredMonsters = monsters.core.filter((m) => {
     const level = stringToNum(m.level);
@@ -88,7 +88,8 @@ function picRandomMoster() {
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="monster in filteredMonsters"
-        class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10"
+        class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
+        style="max-width: 340px"
       >
         <span class="bold uppercase">{{ monster.name }}</span>
         <span class="italic font-small">{{ monster.flavourText }}</span>

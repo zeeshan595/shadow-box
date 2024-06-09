@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { RouterView } from "vue-router";
 import { theme } from "./theme";
+import "./services/db/index";
 
 const styleVariables = computed(() => ({
   "--bg-default": theme.value.background.default,
