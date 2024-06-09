@@ -90,6 +90,7 @@ async function updateMagicItem() {
   temp[itemIndex] = item;
   items.value = temp;
 
+  isEditModalShown.value = false;
   editingMagicItem.value = undefined;
 }
 async function deleteItem(item: WithUUID<Item>) {
@@ -113,6 +114,11 @@ async function resetItems() {
 onMounted(() => {
   ItemsCollection.getAll().then((i) => (items.value = i));
 });
+async function uploadData(data: any[] | null) {
+  if (!data) return;
+  await ItemsCollection.setMany(data);
+  ItemsCollection.getAll().then((i) => (items.value = i));
+}
 </script>
 
 <template>
@@ -121,25 +127,20 @@ onMounted(() => {
     @random="selectRandomMagicItem"
     @add="() => (isCreateModalShown = true)"
     @reset="resetItems"
+    @upload="uploadData"
+    :download-data="items"
+    download-file-name="items"
   />
   <Modal v-model="isCreateModalShown" title="Create Magic Item">
     <ItemEditComponent v-model="newMagicItem" />
     <Button @click="createMagicItem">Create magic Item</Button>
   </Modal>
-  <Modal
-    v-if="editingMagicItem"
-    v-model="isEditModalShown"
-    title="Edit Magic Item"
-  >
-    <ItemEditComponent v-model="editingMagicItem" />
+  <Modal v-model="isEditModalShown" title="Edit Magic Item">
+    <ItemEditComponent v-if="editingMagicItem" v-model="editingMagicItem" />
     <Button @click="updateMagicItem">Update Item</Button>
   </Modal>
-  <Modal
-    v-if="randomMagicItem"
-    v-model="isRandomModalShown"
-    title="random magic item"
-  >
-    <ItemComponent :value="randomMagicItem" />
+  <Modal v-model="isRandomModalShown" title="random magic item">
+    <ItemComponent v-if="randomMagicItem" :value="randomMagicItem" />
   </Modal>
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">magic items</h2>

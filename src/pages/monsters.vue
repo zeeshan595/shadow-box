@@ -135,23 +135,20 @@ function createMonsterFinish() {
   monsters.value.push(monster);
   createMonsterModalShown.value = false;
 }
+async function upload(data: any[] | null) {
+  if (!data) return;
+  await MonstersCollection.setMany(data);
+  MonstersCollection.getAll().then((m) => (monsters.value = m));
+}
 </script>
 
 <template>
-  <Modal
-    v-if="editMonster"
-    v-model="editMonsterModalShown"
-    title="edit monster"
-  >
-    <MonsterEditComponent v-model="editMonster" />
+  <Modal v-model="editMonsterModalShown" title="edit monster">
+    <MonsterEditComponent v-if="editMonster" v-model="editMonster" />
     <Button @click="editMonsterFinish">Save Monster</Button>
   </Modal>
-  <Modal
-    v-if="createMonster"
-    v-model="createMonsterModalShown"
-    title="create monster"
-  >
-    <MonsterEditComponent v-model="createMonster" />
+  <Modal v-model="createMonsterModalShown" title="create monster">
+    <MonsterEditComponent v-if="createMonster" v-model="createMonster" />
     <Button @click="createMonsterFinish">Create Monster</Button>
   </Modal>
   <Modal v-model="randomMonsterPickerModalShown" title="Random Monster Picker">
@@ -159,18 +156,17 @@ function createMonsterFinish() {
     <TextField label="max level" v-model="randomMonsterPicker.max" />
     <Button @click="pickRandomMonster">Get Random Monster</Button>
   </Modal>
-  <Modal
-    v-if="randomMonsterPicked"
-    v-model="randomMonsterModalShown"
-    title="random monster"
-  >
-    <MonsterComponent :value="randomMonsterPicked" />
+  <Modal v-model="randomMonsterModalShown" title="random monster">
+    <MonsterComponent v-if="randomMonsterPicked" :value="randomMonsterPicked" />
   </Modal>
   <TopBar
     v-model="search"
     @add="createNewMonster"
     @random="() => (randomMonsterPickerModalShown = true)"
     @reset="resetMonsters"
+    @upload="upload"
+    :download-data="monsters"
+    download-file-name="monsters"
   />
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">monsters</h2>

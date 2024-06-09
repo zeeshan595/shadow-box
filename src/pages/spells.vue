@@ -131,6 +131,11 @@ async function createSpellFinish() {
   spells.value.push(createSpell.value);
   isCreateSpellShown.value = false;
 }
+async function upload(data: any[] | null) {
+  if (!data) return;
+  await SpellsCollection.setMany(data);
+  SpellsCollection.getAll().then((s) => (spells.value = s));
+}
 </script>
 
 <template>
@@ -163,15 +168,15 @@ async function createSpellFinish() {
     </div>
     <Button @click="pickRandomSpell">Get Random Spell</Button>
   </Modal>
-  <Modal v-if="randomSpell" v-model="isRandomSpellShown" title="Random Spell">
-    <SpellComponent :model-value="randomSpell" />
+  <Modal v-model="isRandomSpellShown" title="Random Spell">
+    <SpellComponent v-if="randomSpell" :model-value="randomSpell" />
   </Modal>
-  <Modal v-if="editSpell" v-model="isEditSpellShown" title="Edit Spell">
-    <SpellEditComponent v-model="editSpell" />
+  <Modal v-model="isEditSpellShown" title="Edit Spell">
+    <SpellEditComponent v-if="editSpell" v-model="editSpell" />
     <Button @click="editSpellFinish">Save Spell</Button>
   </Modal>
-  <Modal v-if="createSpell" v-model="isCreateSpellShown" title="Create Spell">
-    <SpellEditComponent v-model="createSpell" />
+  <Modal v-model="isCreateSpellShown" title="Create Spell">
+    <SpellEditComponent v-if="createSpell" v-model="createSpell" />
     <Button @click="createSpellFinish">Create Spell</Button>
   </Modal>
   <TopBar
@@ -179,6 +184,9 @@ async function createSpellFinish() {
     @random="() => (isRandomSpellPickerShown = true)"
     @reset="resetSpells"
     @add="showCreateSpell"
+    @upload="upload"
+    :download-data="spells"
+    download-file-name="spells"
   />
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">spells</h2>

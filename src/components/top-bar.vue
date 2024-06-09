@@ -5,13 +5,76 @@ import Search from "./search.vue";
 
 const props = defineProps<{
   modelValue: string;
+  downloadData: any[];
+  downloadFileName: string;
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "random"): void;
   (e: "add"): void;
   (e: "reset"): void;
+  (e: "upload", data: any[] | null): void;
 }>();
+
+function download() {
+  const file = new File(
+    [JSON.stringify(props.downloadData)],
+    `${props.downloadFileName}.json`,
+    {
+      type: "text/json",
+    }
+  );
+  // Create a link and set the URL using `createObjectURL`
+  const link = document.createElement("a");
+  link.style.display = "none";
+  link.href = URL.createObjectURL(file);
+  link.download = file.name;
+
+  // It needs to be added to the DOM so it can be clicked
+  document.body.appendChild(link);
+  link.click();
+
+  // To make this work on Firefox we need to wait
+  // a little while before removing it.
+  setTimeout(() => {
+    URL.revokeObjectURL(link.href);
+    document.body.removeChild(link);
+  }, 0);
+}
+async function upload() {
+  const input = document.createElement("input");
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", ".json");
+  input.style.display = "none";
+  document.body.appendChild(input);
+
+  const data = await new Promise<any[] | null>((resolve) => {
+    input.onchange = function () {
+      if (!input.files) return resolve(null);
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.addEventListener("load", (event) => {
+        if (!event.target) return resolve(null);
+        const data = event.target.result as string;
+        if (!data) return resolve(null);
+        document.body.removeChild(input);
+        resolve(JSON.parse(data));
+      });
+      reader.readAsText(file);
+    };
+    input.onabort = function () {
+      document.body.removeChild(input);
+      resolve(null);
+    };
+    input.oncancel = function () {
+      document.body.removeChild(input);
+      resolve(null);
+    };
+    input.click();
+  });
+
+  emits("upload", data);
+}
 </script>
 
 <template>
@@ -27,6 +90,12 @@ const emits = defineEmits<{
     </Button>
     <Button @click="() => emits('reset')">
       <span class="material-symbols-outlined"> remove_selection </span>
+    </Button>
+    <Button @click="upload">
+      <span class="material-symbols-outlined"> upload </span>
+    </Button>
+    <Button @click="download">
+      <span class="material-symbols-outlined"> download </span>
     </Button>
     <Search
       :modelValue="props.modelValue"
