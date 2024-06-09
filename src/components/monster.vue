@@ -42,7 +42,6 @@ const props = defineProps<{
       class="flex-shrink flex-basis-0"
     >
       <span class="bold uppercase">{{ special.name }}</span>
-      {{ special.text }}
       <span v-if="special.text" v-for="specialLine of special.text.split('\n')">
         {{ specialLine }}
       </span>
