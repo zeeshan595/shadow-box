@@ -21,50 +21,42 @@ const monsters = ref<WithUUID<Monster>[]>([]);
 const search = ref<string>("");
 const filteredMonsters = computed<WithUUID<Monster>[]>(() => {
   if (search.value == "") {
-    return monsters.value;
+    return monsters.value.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  return monsters.value.filter((monster) => {
-    if (monster.name.includes(search.value)) {
-      return true;
-    }
-    if (monster.flavourText.includes(search.value)) {
-      return true;
-    }
-    if (monster.alignment.includes(search.value)) {
-      return true;
-    }
-    if (monster.attacks.includes(search.value)) {
-      return true;
-    }
-    if (monster.level.includes(search.value)) {
-      return true;
-    }
-    if (monster.specials) {
-      for (const specialKey of Object.keys(monster.specials)) {
-        if (specialKey.includes(search.value)) {
-          return true;
-        }
-        if ((monster.specials as any)[specialKey]?.includes(search.value)) {
+  const lowerCaseSearch = search.value.toLowerCase();
+  return monsters.value
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter((monster) => {
+      if (monster.name.toLowerCase().includes(lowerCaseSearch)) {
+        return true;
+      }
+      if (monster.attacks.toLowerCase().includes(lowerCaseSearch)) {
+        return true;
+      }
+      if (monster.level.toLowerCase().includes(lowerCaseSearch)) {
+        return true;
+      }
+      for (const special of monster.specials) {
+        if (special.name.toLowerCase().includes(lowerCaseSearch)) {
           return true;
         }
       }
-    }
-    return false;
-  });
+      return false;
+    });
 });
 onMounted(() => {
-  MonstersCollection.getAll().then((m) => {
-    monsters.value = m.sort((a, b) => a.name.localeCompare(b.name));
-  });
+  MonstersCollection.getAll().then((m) => (monsters.value = m));
 });
 
 const editMonsterModalShown = ref(false);
 const randomMonsterPickerModalShown = ref(false);
 const randomMonsterModalShown = ref(false);
 const createMonsterModalShown = ref(false);
-const randomMonsterPickerMinLevel = ref("0");
-const randomMonsterPickerMaxLevel = ref("20");
+const randomMonsterPicker = ref<{ min: string; max: string }>({
+  min: "0",
+  max: "20",
+});
 const randomMonsterPicked = ref<Monster>();
 const editMonster = ref<WithUUID<Monster>>();
 const createMonster = ref<WithUUID<Monster>>();
@@ -79,9 +71,7 @@ async function resetMonsters() {
         ...monster,
       }))
     );
-    MonstersCollection.getAll().then((m) => {
-      monsters.value = m.sort((a, b) => a.name.localeCompare(b.name));
-    });
+    MonstersCollection.getAll().then((m) => (monsters.value = m));
   }
 }
 async function deleteMonster(monster: WithUUID<Monster>) {
@@ -92,8 +82,8 @@ async function deleteMonster(monster: WithUUID<Monster>) {
   }
 }
 async function pickRandomMonster() {
-  const minLevel = Number.parseInt(randomMonsterPickerMinLevel.value);
-  const maxLevel = Number.parseInt(randomMonsterPickerMinLevel.value);
+  const minLevel = Number.parseInt(randomMonsterPicker.value.min);
+  const maxLevel = Number.parseInt(randomMonsterPicker.value.max);
   if (isNaN(minLevel) || isNaN(maxLevel)) {
     return alert("min level or max level is not a number");
   }
@@ -148,7 +138,6 @@ function createMonsterFinish() {
   MonstersCollection.set(monster.uuid, monster);
   createMonster.value = undefined;
   monsters.value.push(monster);
-  monsters.value = monsters.value.sort((a, b) => a.name.localeCompare(b.name));
   createMonsterModalShown.value = false;
 }
 </script>
@@ -171,8 +160,8 @@ function createMonsterFinish() {
     <Button @click="createMonsterFinish">Create Monster</Button>
   </Modal>
   <Modal v-model="randomMonsterPickerModalShown" title="Random Monster Picker">
-    <TextField label="min level" v-model="randomMonsterPickerMinLevel" />
-    <TextField label="max level" v-model="randomMonsterPickerMaxLevel" />
+    <TextField label="min level" v-model="randomMonsterPicker.min" />
+    <TextField label="max level" v-model="randomMonsterPicker.max" />
     <Button @click="pickRandomMonster">Get Random Monster</Button>
   </Modal>
   <Modal

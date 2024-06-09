@@ -1,82 +1,128 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { spells } from "@/data";
-import type { Spell } from "@/data/spells/type";
-import { randomRange, stringToNum } from "@/services/helpers";
+import { computed, onMounted, ref } from "vue";
+import { spells as CoreSpells } from "@/data";
+import type { Spell, SpellClass } from "@/data/spells/type";
 import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
 import Button from "@/components/button.vue";
+import SpellComponent from "@/components/spell.vue";
+import type { WithUUID } from "@/services/db";
+import { SpellsCollection } from "@/services/db/collections";
+import Checkbox from "@/components/checkbox.vue";
+import { randomRange } from "@/services/helpers";
+import { v4 } from "uuid";
 
 const search = ref<string>("");
-const filteredSpells = ref<Spell[]>(spells.core);
-watch(search, (search) => {
-  if (search == "") {
-    filteredSpells.value = spells.core;
-    return;
+const spells = ref<WithUUID<Spell>[]>([]);
+const filteredSpells = computed(() => {
+  if (search.value === "") {
+    return spells.value.sort((a, b) => a.name.localeCompare(b.name));
   }
-  filteredSpells.value = spells.core
+  const searchText = search.value.toLowerCase();
+  return spells.value
+    .sort((a, b) => a.name.localeCompare(b.name))
     .filter((spell) => {
-      if (spell.name.toLowerCase().includes(search.toLowerCase())) {
-        return true;
-      }
-      if (spell.class.includes(search.toLowerCase())) {
-        return true;
-      }
-      if (spell.tier.toString() === search.toLowerCase()) {
-        return true;
-      }
-      if (search.length <= 2 && !isNaN(Number.parseInt(search))) {
-        return false;
-      }
-      if (spell.range.toLowerCase().includes(search.toLowerCase())) {
-        return true;
-      }
-      if (spell.duration.toLowerCase().includes(search.toLowerCase())) {
-        return true;
-      }
-      if (spell.text.toLowerCase().includes(search.toLowerCase())) {
-        return true;
-      }
-      return false;
-    })
-    .sort((a, b) => a.tier - b.tier);
+      return spell.name.toLowerCase().includes(searchText);
+    });
+});
+onMounted(() => {
+  SpellsCollection.getAll().then((s) => (spells.value = s));
 });
 
-const isShownRandomSpellModal = ref(false);
-const randomSpellOptions = ref<{
+const isRandomSpellPickerShown = ref(false);
+const randomSpellPicker = ref<{
   minTier: string;
   maxTier: string;
+  classes: SpellClass;
 }>({
   minTier: "1",
   maxTier: "5",
+  classes: {
+    priest: true,
+    wizard: true,
+    seer: true,
+    ovate: true,
+    shamanic: true,
+    graveWarden: true,
+    witch: true,
+  },
 });
-
+const isRandomSpellShown = ref(false);
+const randomSpell = ref<WithUUID<Spell>>();
 function pickRandomSpell() {
-  const minTier = stringToNum(randomSpellOptions.value.minTier);
-  const maxTier = stringToNum(randomSpellOptions.value.maxTier);
-  const filteredSpells = spells.core.filter((spell) => {
-    return minTier <= spell.tier && maxTier >= spell.tier;
+  const minTier = Number.parseInt(randomSpellPicker.value.minTier);
+  const maxTier = Number.parseInt(randomSpellPicker.value.maxTier);
+  if (isNaN(minTier) || isNaN(maxTier)) {
+    return alert("min or max tier is not a number");
+  }
+  const classes = randomSpellPicker.value.classes;
+  console.log(classes);
+  const filteredSpells = spells.value.filter((spell) => {
+    for (const key of Object.keys(spell.class) as (keyof SpellClass)[]) {
+      console.log(spell.class[key]);
+      if (classes[key] && spell.class[key]) {
+        return true;
+      }
+    }
+    return false;
   });
   if (filteredSpells.length === 0) {
-    alert("No spells found with those parameters");
-    return;
+    return alert("no spell found");
   }
-  const randomSpellIndex = randomRange(0, filteredSpells.length - 1);
-  search.value = filteredSpells[randomSpellIndex].name.toLowerCase();
-  isShownRandomSpellModal.value = false;
+  randomSpell.value = filteredSpells[randomRange(0, filteredSpells.length - 1)];
+  isRandomSpellShown.value = true;
+  isRandomSpellPickerShown.value = false;
+}
+async function resetSpells() {
+  const RESET_TEXT =
+    "Are you sure you want to reset spells to the spells from shadow dark core rulebook?";
+  if (confirm(RESET_TEXT)) {
+    await SpellsCollection.clear();
+    await SpellsCollection.setMany(
+      CoreSpells.core.map((spell) => ({ uuid: v4(), ...spell }))
+    );
+    SpellsCollection.getAll().then((s) => (spells.value = s));
+  }
+}
+async function deleteSpell(spell: WithUUID<Spell>) {
+  const DELETE_TEXT = `Are you sure you want to delete ${spell.name}?`;
+  if (confirm(DELETE_TEXT)) {
+    await SpellsCollection.delete(spell.uuid);
+    spells.value = spells.value.filter((s) => spell.uuid !== s.uuid);
+  }
 }
 </script>
 
 <template>
-  <Modal v-model="isShownRandomSpellModal" title="Random Spell">
+  <Modal v-model="isRandomSpellPickerShown" title="Random Spell Picker">
     <div class="flex-row align-center gap20">
-      <TextField stat label="min tier" v-model="randomSpellOptions.minTier" />
-      <TextField stat label="max tier" v-model="randomSpellOptions.maxTier" />
+      <TextField stat label="min tier" v-model="randomSpellPicker.minTier" />
+      <TextField stat label="max tier" v-model="randomSpellPicker.maxTier" />
+    </div>
+    <div class="gap10" style="align-self: center">
+      <div class="font-small uppercase bold">Classes</div>
+      <Checkbox label="Priest" v-model="randomSpellPicker.classes.priest" />
+      <Checkbox label="Wizard" v-model="randomSpellPicker.classes.wizard" />
+      <Checkbox label="Seer" v-model="randomSpellPicker.classes.seer" />
+      <Checkbox label="Ovate" v-model="randomSpellPicker.classes.ovate" />
+      <Checkbox label="Shamanic" v-model="randomSpellPicker.classes.shamanic" />
+      <Checkbox
+        label="Grave Warden"
+        v-model="randomSpellPicker.classes.graveWarden"
+      />
+      <Checkbox label="Witch" v-model="randomSpellPicker.classes.witch" />
     </div>
     <Button @click="pickRandomSpell">Get Random Spell</Button>
   </Modal>
-  <TopBar v-model="search" @random="() => (isShownRandomSpellModal = true)" />
+  <Modal v-if="randomSpell" v-model="isRandomSpellShown" title="Random Spell">
+    <SpellComponent :model-value="randomSpell" />
+  </Modal>
+  <TopBar
+    v-model="search"
+    @random="() => (isRandomSpellPickerShown = true)"
+    @reset="resetSpells"
+  />
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">spells</h2>
     <div class="flex-row flex-wrap gap20">
@@ -85,15 +131,16 @@ function pickRandomSpell() {
         class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
         style="max-width: 340px"
       >
-        <span class="bold uppercase">{{ spell.name }}</span>
-        <span>
-          <span class="bold uppercase">tier</span> {{ spell.tier }},
-          <span class="bold uppercase">class</span>
-          {{ spell.class.join(", ") }},
-          <span class="bold uppercase">duration</span> {{ spell.duration }},
-          <span class="bold uppercase">range</span> {{ spell.range }}
-        </span>
-        <span>{{ spell.text }}</span>
+        <div class="flex-row gap20">
+          <span class="material-symbols-outlined pointer"> edit</span>
+          <span
+            class="material-symbols-outlined pointer"
+            @click="() => deleteSpell(spell)"
+          >
+            delete
+          </span>
+        </div>
+        <SpellComponent :model-value="spell" />
       </div>
     </div>
   </div>

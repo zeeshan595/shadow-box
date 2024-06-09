@@ -17,30 +17,12 @@ const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
 const filteredItems = computed<WithUUID<Item>[]>(() => {
   if (search.value.trim() == "") {
-    return items.value;
+    return items.value.sort((a, b) => a.name.localeCompare(b.name));
   }
   const searchText = search.value.toLowerCase();
-  return items.value.filter((item) => {
-    if (item.name.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    if (item.flavourText.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    if (item.bonus?.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    if (item.benefit?.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    if (item.curse?.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    if (item.personality?.toLowerCase().includes(searchText)) {
-      return true;
-    }
-    return false;
-  });
+  return items.value
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter((item) => item.name.toLowerCase().includes(searchText));
 });
 const isRandomModalShown = ref(false);
 const randomMagicItem = ref<Item>();
@@ -127,15 +109,11 @@ async function resetItems() {
     await ItemsCollection.setMany(
       CoreItems.magic.map((item) => ({ uuid: v4(), ...item }))
     );
-    ItemsCollection.getAll().then((i) => {
-      items.value = i.sort((a, b) => a.name.localeCompare(b.name));
-    });
+    ItemsCollection.getAll().then((i) => (items.value = i));
   }
 }
 onMounted(() => {
-  ItemsCollection.getAll().then((i) => {
-    items.value = i.sort((a, b) => a.name.localeCompare(b.name));
-  });
+  ItemsCollection.getAll().then((i) => (items.value = i));
 });
 </script>
 
