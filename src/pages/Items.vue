@@ -5,12 +5,13 @@ import { computed, onMounted, ref } from "vue";
 import { randomRange } from "@/services/helpers";
 import { ItemsCollection } from "@/services/db/collections";
 import { v4 } from "uuid";
-import { createItem, items as CoreItems } from "@/data";
+import { createItem, items as CoreItems, cloneItem } from "@/data";
 import TopBar from "@/components/top-bar.vue";
 import Button from "@/components/button.vue";
 import TextField from "@/components/text-field.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
+import ItemEditComponent from "@/components/item-edit.vue";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -48,7 +49,7 @@ function selectRandomMagicItem() {
   randomMagicItem.value = items.value[randomMagicItemIndex];
   isRandomModalShown.value = true;
 }
-function cleanupItem(item: Item): Item {
+function cleanupItem(item: WithUUID<Item>): WithUUID<Item> {
   item.name = item.name.trim();
   if (newMagicItem.value.benefit?.trim() === "") {
     delete newMagicItem.value.benefit;
@@ -65,21 +66,20 @@ function cleanupItem(item: Item): Item {
   return item;
 }
 const isCreateModalShown = ref(false);
-const newMagicItem = ref<Item>(createItem());
+const newMagicItem = ref<WithUUID<Item>>({ ...createItem(), uuid: v4() });
 function createMagicItem() {
   if (newMagicItem.value.name.trim() === "") {
     return alert("No item name provided");
   }
   // setup magic item
   const item = cleanupItem(newMagicItem.value);
-  const uuid = v4();
 
   // update database, list and filter
-  ItemsCollection.set(uuid, item);
-  items.value.push({ uuid, ...item });
+  ItemsCollection.set(item.uuid, cloneItem(item));
+  items.value.push(item);
 
   // reset modal
-  newMagicItem.value = createItem();
+  newMagicItem.value = { ...createItem(), uuid: v4() };
   return (isCreateModalShown.value = false);
 }
 const isEditModalShown = ref(false);
@@ -99,10 +99,10 @@ async function updateMagicItem() {
 
   const item = {
     ...editingMagicItem.value,
-    ...cleanupItem(editingMagicItem.value as Item),
+    ...cleanupItem(editingMagicItem.value),
   };
 
-  await ItemsCollection.set(item.uuid, item);
+  await ItemsCollection.set(item.uuid, cloneItem(item));
   const itemIndex = items.value.findIndex((i) => i.uuid === item.uuid);
   const temp = [...items.value];
   temp[itemIndex] = item;
@@ -147,12 +147,7 @@ onMounted(() => {
     @reset="resetItems"
   />
   <Modal v-model="isCreateModalShown" title="Create Magic Item">
-    <TextField label="name" v-model="newMagicItem.name" />
-    <TextField large label="flavour text" v-model="newMagicItem.flavourText" />
-    <TextField large label="bonus" v-model="newMagicItem.bonus" />
-    <TextField large label="benefit" v-model="newMagicItem.benefit" />
-    <TextField large label="personality" v-model="newMagicItem.personality" />
-    <TextField large label="curse" v-model="newMagicItem.curse" />
+    <ItemEditComponent v-model="newMagicItem" />
     <Button @click="createMagicItem">Create magic Item</Button>
   </Modal>
   <Modal
@@ -160,20 +155,7 @@ onMounted(() => {
     v-model="isEditModalShown"
     title="Edit Magic Item"
   >
-    <TextField label="name" v-model="editingMagicItem.name" />
-    <TextField
-      large
-      label="flavour text"
-      v-model="editingMagicItem.flavourText"
-    />
-    <TextField large label="bonus" v-model="editingMagicItem.bonus" />
-    <TextField large label="benefit" v-model="editingMagicItem.benefit" />
-    <TextField large label="curse" v-model="editingMagicItem.curse" />
-    <TextField
-      large
-      label="personality"
-      v-model="editingMagicItem.personality"
-    />
+    <ItemEditComponent v-model="editingMagicItem" />
     <Button @click="updateMagicItem">Update Item</Button>
   </Modal>
   <Modal

@@ -1,5 +1,4 @@
-import type { Monster } from "./type";
-export const monsters: Monster[] = [
+[
   {
     "name": "ABOLETH",
     "flavourText": "Enormous, antediluvian catfish covered in slime and tentacles. They hate all intelligent beings.",

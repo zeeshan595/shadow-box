@@ -1,3 +1,4 @@
+import type { WithUUID } from '@/services/db';
 import * as core from './core';
 import type { Monster } from './type';
 
@@ -22,6 +23,19 @@ export function createMonster(): Monster {
       int: "-1",
       wis: "+1",
       cha: "-2"
-    }
+    },
+    specials: []
   }
+}
+
+export function cloneMonster<T extends Monster>(monster: T): T {
+  return {
+    ...monster,
+    stats: {
+      ...monster.stats,
+    },
+    specials: [
+      ...monster.specials.map(special => ({ ...special }))
+    ]
+  };
 }

@@ -36,13 +36,14 @@ const props = defineProps<{
     <span class="bold uppercase">cha</span>
     {{ props.value.stats.cha }},
   </span>
-  <div v-if="props.value.specials" class="gap10 justify-start">
+  <div class="gap10 justify-start">
     <div
-      v-for="special in Object.keys(props.value.specials)"
+      v-for="special in props.value.specials"
       class="flex-shrink flex-basis-0"
     >
-      <span class="bold uppercase">{{ special }}</span>
-      <span v-for="specialLine of props.value.specials[special].split('\n')">
+      <span class="bold uppercase">{{ special.name }}</span>
+      {{ special.text }}
+      <span v-if="special.text" v-for="specialLine of special.text.split('\n')">
         {{ specialLine }}
       </span>
     </div>

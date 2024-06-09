@@ -15,5 +15,8 @@ export type Monster = {
     ac: string;
     mv: string;
   },
-  specials?: Record<string, string>
+  specials: {
+    name: string;
+    text: string;
+  }[]
 };

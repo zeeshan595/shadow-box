@@ -15,3 +15,9 @@ export function createItem(): Item {
     personality: "",
   };
 }
+
+export function cloneItem<T extends Item>(item: T): T {
+  return {
+    ...item
+  }
+}

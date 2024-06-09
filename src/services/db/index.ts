@@ -72,7 +72,7 @@ export class Collection<T> {
   }
   public async set(uuid: string, data: T): Promise<WithUUID<T>> {
     const { transaction, store } = await this.getObjectStore('readwrite');
-    const result = store.put(Object.assign({ uuid }, data), uuid);
+    const result = store.put({ ...data, uuid }, uuid);
     transaction.commit();
     return new Promise(resolve => {
       result.onsuccess = () => resolve({ uuid, ...data });
@@ -83,7 +83,7 @@ export class Collection<T> {
     const { transaction, store } = await this.getObjectStore('readwrite');
     const results: IDBRequest[] = [];
     for (const entry of data) {
-      results.push(store.put(Object.assign({}, entry), entry.uuid));
+      results.push(store.put(entry, entry.uuid));
     }
     transaction.commit();
     return new Promise((resolve) => {
