@@ -16,7 +16,6 @@ export async function init(db: IDBDatabase) {
     monstersStore.add({ uuid, ...monster }, uuid);
   }
   for (const spell of spells.core) {
-    const uuid = v4();
-    spellsStore.add({ uuid, ...spell }, uuid);
+    spellsStore.add(spell, spell.uuid);
   }
 }

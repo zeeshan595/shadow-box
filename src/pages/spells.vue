@@ -84,9 +84,7 @@ async function resetSpells() {
     "Are you sure you want to reset spells to the spells from shadow dark core rulebook?";
   if (confirm(RESET_TEXT)) {
     await SpellsCollection.clear();
-    await SpellsCollection.setMany(
-      CoreSpells.core.map((spell) => ({ uuid: v4(), ...spell }))
-    );
+    await SpellsCollection.setMany(CoreSpells.core);
     SpellsCollection.getAll().then((s) => (spells.value = s));
   }
 }
@@ -187,7 +185,7 @@ async function createSpellFinish() {
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="spell in filteredSpells"
-        class="bg-paper p10 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
+        class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
         style="max-width: 340px"
       >
         <div class="flex-row gap20">
