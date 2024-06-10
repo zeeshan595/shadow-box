@@ -42,14 +42,14 @@ function removeSpecial(index: number) {
   <TextField label="name" v-model="value.name" />
   <TextField large label="flavour text" v-model="value.flavourText" />
   <TextField label="attacks" v-model="value.attacks" />
-  <div class="flex-row gap10">
+  <TextField label="movement" v-model="value.stats.mv" />
+  <div class="flex-row gap10 flex-wrap">
     <TextField small stat label="level" v-model="value.level" />
     <TextField small stat label="AC" v-model="value.stats.ac" />
     <TextField small stat label="HP" v-model="value.stats.hp" />
-    <TextField small stat label="movement" v-model="value.stats.mv" />
     <TextField small stat label="alignment" v-model="value.alignment" />
   </div>
-  <div class="flex-row gap10">
+  <div class="flex-row gap10 flex-wrap">
     <TextField small stat label="STR" v-model="value.stats.str" />
     <TextField small stat label="DEX" v-model="value.stats.dex" />
     <TextField small stat label="CON" v-model="value.stats.con" />

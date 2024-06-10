@@ -6,8 +6,8 @@ import { isMobileView } from "@/const";
 
 const props = defineProps<{
   modelValue: string;
-  downloadData: any[];
-  downloadFileName: string;
+  downloadData?: any[];
+  downloadFileName?: string;
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -20,7 +20,7 @@ const emits = defineEmits<{
 function download() {
   const file = new File(
     [JSON.stringify(props.downloadData)],
-    `${props.downloadFileName}.json`,
+    `${props.downloadFileName ?? "download"}.json`,
     {
       type: "text/json",
     }
@@ -98,7 +98,7 @@ async function upload() {
     <Button @click="upload">
       <span class="material-symbols-outlined"> upload </span>
     </Button>
-    <Button @click="download">
+    <Button @click="download" v-if="props.downloadData">
       <span class="material-symbols-outlined"> download </span>
     </Button>
     <Search

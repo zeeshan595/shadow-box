@@ -58,7 +58,7 @@ function updateClassList(classValue: keyof SpellClass, value: boolean) {
   <TextField large label="description" v-model="value.text" />
   <div class="gap10" style="align-self: center">
     <div class="font-small uppercase bold">Classes</div>
-    <div class="flex-row gap10">
+    <div class="flex-row gap10 flex-wrap">
       <Checkbox
         label="Priest"
         :model-value="value.class.priest"
@@ -69,20 +69,18 @@ function updateClassList(classValue: keyof SpellClass, value: boolean) {
         :model-value="value.class.wizard"
         @update:model-value="(val) => updateClassList('wizard', val)"
       />
-    </div>
-    <div class="flex-row gap10">
       <Checkbox
         label="Seer"
         :model-value="value.class.seer"
         @update:model-value="(val) => updateClassList('seer', val)"
       />
+    </div>
+    <div class="flex-row gap10 flex-wrap">
       <Checkbox
         label="Ovate"
         :model-value="value.class.ovate"
         @update:model-value="(val) => updateClassList('ovate', val)"
       />
-    </div>
-    <div class="flex-row gap10">
       <Checkbox
         label="Shamanic"
         :model-value="value.class.shamanic"

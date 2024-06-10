@@ -69,9 +69,9 @@ onMounted(() => {
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
-    width: 600px;
+    max-width: 600px;
     min-height: 100px;
-    max-height: calc(100% - 200px);
+    max-height: calc(100% - 100px);
     overflow-x: hidden;
     overflow-y: auto;
   }
