@@ -4,9 +4,10 @@ import Button from "@/components/button.vue";
 </script>
 
 <template>
-  <div class="gap10 p20">
+  <div class="gap10 p20 flex-row flex-wrap">
     <Button @click="() => router.push('/items')">Magic Items</Button>
     <Button @click="() => router.push('/monsters')">Monsters</Button>
     <Button @click="() => router.push('/spells')">Spells</Button>
+    <Button @click="() => router.push('/roll-tables')">Roll Tables</Button>
   </div>
 </template>

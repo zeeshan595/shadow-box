@@ -10,6 +10,7 @@ import {
   createMonster as createMonsterFn,
 } from "@/data/";
 import { v4 } from "uuid";
+import { importShadowdarkBook } from "@/services/pdf";
 import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
@@ -135,8 +136,11 @@ function createMonsterFinish() {
   monsters.value.push(monster);
   createMonsterModalShown.value = false;
 }
-async function upload(data: any[] | null) {
+async function upload(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
+  if (type === "pdf") {
+    return importShadowdarkBook(data[0]);
+  }
   await MonstersCollection.setMany(data);
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 }

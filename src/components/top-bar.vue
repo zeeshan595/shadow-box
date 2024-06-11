@@ -14,7 +14,7 @@ const emits = defineEmits<{
   (e: "random"): void;
   (e: "add"): void;
   (e: "reset"): void;
-  (e: "upload", data: any[] | null): void;
+  (e: "upload", data: any[] | null, type: "pdf" | "json"): void;
 }>();
 
 function download() {
@@ -45,23 +45,30 @@ function download() {
 async function upload() {
   const input = document.createElement("input");
   input.setAttribute("type", "file");
-  input.setAttribute("accept", ".json");
+  input.setAttribute("accept", ".json,.pdf");
   input.style.display = "none";
   document.body.appendChild(input);
 
+  let type: "json" | "pdf" = "json";
   const data = await new Promise<any[] | null>((resolve) => {
     input.onchange = function () {
       if (!input.files) return resolve(null);
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.addEventListener("load", (event) => {
-        if (!event.target) return resolve(null);
-        const data = event.target.result as string;
-        if (!data) return resolve(null);
-        document.body.removeChild(input);
-        resolve(JSON.parse(data));
-      });
-      reader.readAsText(file);
+      if (file.type === "application/pdf") {
+        type = "pdf";
+        const reader = new FileReader();
+        reader.addEventListener(
+          "load",
+          function () {
+            resolve([reader.result]);
+          },
+          false
+        );
+        reader.readAsDataURL(file);
+      } else if (file.type === "application/json") {
+        type = "json";
+        file.text().then((data) => resolve(JSON.parse(data)));
+      }
     };
     input.onabort = function () {
       document.body.removeChild(input);
@@ -74,7 +81,7 @@ async function upload() {
     input.click();
   });
 
-  emits("upload", data);
+  emits("upload", data, type);
 }
 </script>
 

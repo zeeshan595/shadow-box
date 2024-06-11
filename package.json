@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@owlbear-rodeo/sdk": "^2.4.0",
+    "pdfjs-dist": "^4.3.136",
     "sass": "^1.77.4",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",

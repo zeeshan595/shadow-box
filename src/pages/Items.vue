@@ -11,6 +11,7 @@ import Button from "@/components/button.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
+import { importShadowdarkBook } from "@/services/pdf";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -113,8 +114,11 @@ async function resetItems() {
 onMounted(() => {
   ItemsCollection.getAll().then((i) => (items.value = i));
 });
-async function uploadData(data: any[] | null) {
+async function uploadData(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
+  if (type === "pdf") {
+    return importShadowdarkBook(data[0]);
+  }
   await ItemsCollection.setMany(data);
   ItemsCollection.getAll().then((i) => (items.value = i));
 }
