@@ -17,12 +17,11 @@ export async function importShadowdarkBook(rawPdfData: string) {
   }
   switch (book) {
     case Books.UnnaturalSelection:
-      importUnnaturalSelection(pages);
+      await importUnnaturalSelection(pages);
       break;
     default:
       alert('Failed to import, unknown book');
   }
-  console.log(book);
 }
 
 export function selectBook(pages: string[]): Books {

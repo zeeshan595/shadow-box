@@ -139,9 +139,10 @@ function createMonsterFinish() {
 async function upload(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    return importShadowdarkBook(data[0]);
+    await importShadowdarkBook(data[0]);
+  } else {
+    await MonstersCollection.setMany(data);
   }
-  await MonstersCollection.setMany(data);
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 }
 </script>

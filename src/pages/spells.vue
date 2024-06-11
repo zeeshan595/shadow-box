@@ -135,9 +135,10 @@ async function createSpellFinish() {
 async function upload(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    return importShadowdarkBook(data[0]);
+    await importShadowdarkBook(data[0]);
+  } else {
+    await SpellsCollection.setMany(data);
   }
-  await SpellsCollection.setMany(data);
   SpellsCollection.getAll().then((s) => (spells.value = s));
 }
 </script>

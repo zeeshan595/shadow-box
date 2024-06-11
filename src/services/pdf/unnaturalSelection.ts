@@ -2,7 +2,7 @@ import type { Spell } from "@/data/spells/type";
 import { SpellsCollection } from "../db/collections";
 import { v4 } from "uuid";
 
-export function importUnnaturalSelection(pages: string[]) {
+export async function importUnnaturalSelection(pages: string[]) {
   const spells = importSpells(pages);
   SpellsCollection.setMany(spells.map(spell => ({ uuid: v4(), ...spell })));
 }
@@ -28,6 +28,7 @@ function importSpells(pages: string[]): Spell[] {
       if (name === 'SACRED BOUNTY SHAMANIC PURGE') {
         name = 'SHAMANIC PURGE';
       }
+      console.log(spellClass);
       spells.push({
         name,
         tier: Number.parseInt(tier),

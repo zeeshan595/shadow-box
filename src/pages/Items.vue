@@ -117,9 +117,10 @@ onMounted(() => {
 async function uploadData(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    return importShadowdarkBook(data[0]);
+    await importShadowdarkBook(data[0]);
+  } else {
+    await ItemsCollection.setMany(data);
   }
-  await ItemsCollection.setMany(data);
   ItemsCollection.getAll().then((i) => (items.value = i));
 }
 </script>
