@@ -1,10 +1,13 @@
 import type { Spell } from "@/data/spells/type";
+import { SpellsCollection } from "../db/collections";
+import { v4 } from "uuid";
 
 export function importUnnaturalSelection(pages: string[]) {
   const spells = importSpells(pages);
+  SpellsCollection.setMany(spells.map(spell => ({ uuid: v4(), ...spell })));
 }
 
-function importSpells(pages: string[]) {
+function importSpells(pages: string[]): Spell[] {
   const spellPages = pages.slice(49, 76);
   const spells: Spell[] = [];
   for (let page of spellPages) {
@@ -57,8 +60,6 @@ function importSpells(pages: string[]) {
         }
       }
     }
-    if (page.length > 20) {
-      console.log(page);
-    }
   }
+  return spells;
 }
