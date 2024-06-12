@@ -97,12 +97,14 @@ export async function importSpells(text: string, replaceExistingItems = false) {
         };
       }
     } else if (/^Tier [0-9]+, [a-z\ ]+$/.test(line)) {
-      const matches = /^Tier ([0-9]+), ([a-z\ ]+)$/.exec(line);
+      const matches = /^Tier ([0-9]+), ([a-z\ ]+)((Duration: ([a-zA-Z0-9\(\) ]+))?\s{0,}(Range: (Self|Close|Near|Far|Unlimited)))?$/.exec(line);
       if (!matches) {
         throw new Error('test was successful but could not match tier or class');
       }
       const tier = Number.parseInt(matches[1]);
       const classes = matches[2];
+      const duration = matches[5];
+      const range = matches[7];
       currentSpell.tier = tier;
       currentSpell.class = {
         graveWarden: classes.includes('grave warden'),
@@ -113,6 +115,22 @@ export async function importSpells(text: string, replaceExistingItems = false) {
         witch: classes.includes('witch'),
         wizard: classes.includes('wizard')
       };
+      if (duration) {
+        currentSpell.duration = duration.trim();
+      }
+      if (range) {
+        if (range.includes('Self')) {
+          currentSpell.range = 'Self';
+        } else if (range.includes('Close')) {
+          currentSpell.range = 'Close';
+        } else if (range.includes('Near')) {
+          currentSpell.range = 'Near';
+        } else if (range.includes('Far')) {
+          currentSpell.range = 'Far';
+        } else if (range.includes('Unlimited')) {
+          currentSpell.range = 'Unlimited';
+        }
+      }
     } else if (/^Duration: /.test(line)) {
       const matches = /^Duration: ([A-Za-z0-9\(\) ]+)(\s+Range: (Self|Close|Near|Far|Unlimited)|\s*$)/.exec(line);
       if (!matches) {
