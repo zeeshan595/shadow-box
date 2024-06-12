@@ -17,7 +17,13 @@ const value = computed({
     return props.modelValue;
   },
   set(value) {
-    emits("update:modelValue", value);
+    emits("update:modelValue", {
+      ...value,
+      stats: {
+        ...value.stats,
+      },
+      specials: [...value.specials.map((s) => ({ ...s }))],
+    });
   },
 });
 

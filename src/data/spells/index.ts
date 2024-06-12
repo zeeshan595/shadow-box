@@ -8,9 +8,7 @@ export const spells = {
 export function createSpell(): Spell {
   return {
     name: "",
-    class: {
-      wizard: true
-    },
+    class: {},
     duration: "Instant",
     range: "Near",
     tier: 1,

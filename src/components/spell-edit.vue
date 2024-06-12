@@ -13,24 +13,63 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: "update:modelValue", value: WithUUID<Spell>): void;
 }>();
-const value = computed({
+const nameValue = computed({
   get() {
-    return {
-      ...props.modelValue,
-      class: {
-        wizard: false,
-        priest: false,
-        seer: false,
-        ovate: false,
-        shamanic: false,
-        graveWarden: false,
-        witch: false,
-        ...props.modelValue.class,
-      },
-    };
+    return props.modelValue.name;
   },
-  set(value) {
-    emits("update:modelValue", value);
+  set(value: string) {
+    const temp = { ...props.modelValue };
+    temp.name = value;
+    emits("update:modelValue", temp);
+  },
+});
+const durationValue = computed({
+  get() {
+    return props.modelValue.duration;
+  },
+  set(value: string) {
+    const temp = { ...props.modelValue };
+    temp.duration = value;
+    emits("update:modelValue", temp);
+  },
+});
+const rangeValue = computed({
+  get() {
+    return props.modelValue.range;
+  },
+  set(value: string) {
+    const temp = { ...props.modelValue };
+    switch (value.trim().toLowerCase()) {
+      case "self":
+        temp.range = "Self";
+        break;
+      case "close":
+        temp.range = "Close";
+        break;
+      case "near":
+        temp.range = "Near";
+        break;
+      case "far":
+        temp.range = "Far";
+        break;
+      case "unlimited":
+        temp.range = "Unlimited";
+        break;
+      default:
+        temp.range = "Self";
+        break;
+    }
+    emits("update:modelValue", temp);
+  },
+});
+const textValue = computed({
+  get() {
+    return props.modelValue.text;
+  },
+  set(value: string) {
+    const temp = { ...props.modelValue };
+    temp.text = value;
+    emits("update:modelValue", temp);
   },
 });
 const tierValue = computed({
@@ -51,50 +90,50 @@ function updateClassList(classValue: keyof SpellClass, value: boolean) {
 </script>
 
 <template>
-  <TextField label="name" v-model="value.name" />
+  <TextField label="name" v-model="nameValue" />
   <TextField label="tier" v-model="tierValue" />
-  <TextField label="duration" v-model="value.duration" />
-  <TextField label="range" v-model="value.range" />
-  <TextField large label="description" v-model="value.text" />
+  <TextField label="duration" v-model="durationValue" />
+  <TextField label="range" v-model="rangeValue" />
+  <TextField large label="description" v-model="textValue" />
   <div class="gap10" style="align-self: center">
     <div class="font-small uppercase bold">Classes</div>
     <div class="flex-row gap10 flex-wrap">
       <Checkbox
         label="Priest"
-        :model-value="value.class.priest"
+        :model-value="props.modelValue.class.priest ?? false"
         @update:model-value="(val) => updateClassList('priest', val)"
       />
       <Checkbox
         label="Wizard"
-        :model-value="value.class.wizard"
+        :model-value="props.modelValue.class.wizard ?? false"
         @update:model-value="(val) => updateClassList('wizard', val)"
       />
       <Checkbox
         label="Seer"
-        :model-value="value.class.seer"
+        :model-value="props.modelValue.class.seer ?? false"
         @update:model-value="(val) => updateClassList('seer', val)"
       />
     </div>
     <div class="flex-row gap10 flex-wrap">
       <Checkbox
         label="Ovate"
-        :model-value="value.class.ovate"
+        :model-value="props.modelValue.class.ovate ?? false"
         @update:model-value="(val) => updateClassList('ovate', val)"
       />
       <Checkbox
         label="Shamanic"
-        :model-value="value.class.shamanic"
+        :model-value="props.modelValue.class.shamanic ?? false"
         @update:model-value="(val) => updateClassList('shamanic', val)"
       />
       <Checkbox
         label="Witch"
-        :model-value="value.class.witch"
+        :model-value="props.modelValue.class.witch ?? false"
         @update:model-value="(val) => updateClassList('witch', val)"
       />
     </div>
     <Checkbox
       label="Grave Warden"
-      :model-value="value.class.graveWarden"
+      :model-value="props.modelValue.class.graveWarden ?? false"
       @update:model-value="(val) => updateClassList('graveWarden', val)"
     />
   </div>

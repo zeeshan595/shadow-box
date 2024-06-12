@@ -106,6 +106,7 @@ function pickSpellToEdit(spell: WithUUID<Spell>) {
 }
 async function editSpellFinish() {
   if (!editSpell.value) return;
+  console.log(editSpell.value);
   await SpellsCollection.set(editSpell.value.uuid, cloneSpell(editSpell.value));
   const spellIndex = spells.value.findIndex(
     (s) => s.uuid === editSpell.value!.uuid
