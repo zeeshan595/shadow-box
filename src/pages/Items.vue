@@ -125,10 +125,7 @@ const importerText = ref("");
 const showImporter = ref(false);
 const importerReplacesExistingContent = ref(false);
 async function onImport() {
-  const newItems = await importItems(
-    importerText.value,
-    importerReplacesExistingContent.value
-  );
+  await importItems(importerText.value, importerReplacesExistingContent.value);
   ItemsCollection.getAll().then((i) => (items.value = i));
   showImporter.value = false;
 }

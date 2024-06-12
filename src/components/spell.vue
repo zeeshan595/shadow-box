@@ -25,5 +25,7 @@ const classes = computed(() => {
     <span class="bold uppercase">class</span>
     {{ classes }},
   </span>
-  <span>{{ props.modelValue.text }}</span>
+  <template v-for="line in props.modelValue.text.split('\n')">
+    <span>{{ line }}</span>
+  </template>
 </template>

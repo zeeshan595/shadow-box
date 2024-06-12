@@ -4,6 +4,41 @@ import { v4 } from "uuid";
 import type { Spell } from "@/data/spells/type";
 import type { Monster } from "@/data/monsters/type";
 import { createMonster, createSpell } from "@/data";
+import type { Collection, WithUUID } from "../db";
+
+async function updateCollection<T extends { name: string }>(
+  collection: Collection<T>,
+  newItems: T[],
+  replaceExisting: boolean = false
+) {
+  const existingItems = await collection.getAll();
+
+  // replace existing items
+  if (replaceExisting) {
+    const itemsToInsert = newItems.map(item => {
+      const foundExisting = existingItems.find(i => i.name === item.name);
+      if (foundExisting) {
+        return {
+          uuid: foundExisting.uuid,
+          ...item
+        };
+      }
+      return {
+        uuid: v4(),
+        ...item
+      }
+    });
+    await collection.setMany(itemsToInsert);
+  } else {
+    // update all items that are not existing in the database
+    const itemsToInsert = (
+      newItems
+        .filter(item => existingItems.findIndex(i => i.name === item.name) === -1)
+        .map(i => ({ uuid: v4(), ...i }))
+    );
+    await collection.setMany(itemsToInsert);
+  }
+}
 
 export async function importItems(text: string, replaceExistingItems = false) {
   const lines = text.split('\n');
@@ -40,12 +75,7 @@ export async function importItems(text: string, replaceExistingItems = false) {
     items.push(currentItem);
   }
 
-  if (!replaceExistingItems) {
-    const existingItems = await ItemsCollection.getAll();
-    items = items.filter(item => existingItems.findIndex(i => i.name === item.name) === -1);
-  }
-  const itemsWithUUID = items.map(item => ({ uuid: v4(), ...item }));
-  await ItemsCollection.setMany(itemsWithUUID);
+  await updateCollection(ItemsCollection, items, replaceExistingItems);
 }
 
 export async function importSpells(text: string, replaceExistingItems = false) {
@@ -117,11 +147,7 @@ export async function importSpells(text: string, replaceExistingItems = false) {
     spells.push(currentSpell);
   }
 
-  if (!replaceExistingItems) {
-    const existingSpells = await SpellsCollection.getAll();
-    spells = spells.filter(spell => existingSpells.findIndex(s => s.name === spell.name) === -1);
-  }
-  await SpellsCollection.setMany(spells.map(spell => ({ uuid: v4(), ...spell })));
+  await updateCollection(SpellsCollection, spells, replaceExistingItems);
 }
 
 export async function importMonsters(text: string, replaceExistingItems = false) {
@@ -198,9 +224,5 @@ export async function importMonsters(text: string, replaceExistingItems = false)
     monsters.push(currentMonster);
   }
 
-  if (!replaceExistingItems) {
-    const existingMonsters = await MonstersCollection.getAll();
-    monsters = monsters.filter(monster => existingMonsters.findIndex(m => m.name === monster.name) === -1);
-  }
-  await MonstersCollection.setMany(monsters.map(monster => ({ uuid: v4(), ...monster })));
+  await updateCollection(MonstersCollection, monsters, replaceExistingItems);
 }

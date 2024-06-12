@@ -7,15 +7,14 @@ export const spells = {
 
 export function createSpell(): Spell {
   return {
-    name: "New Spell",
+    name: "",
     class: {
-      priest: true,
       wizard: true
     },
-    duration: "Instant",
+    duration: "",
     range: "Near",
     tier: 1,
-    text: "Nothing happens"
+    text: ""
   }
 }
 

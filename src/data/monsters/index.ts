@@ -8,21 +8,21 @@ export const monsters = {
 
 export function createMonster(): Monster {
   return {
-    name: "New Monster",
-    flavourText: "All you see is death",
+    name: "",
+    flavourText: "",
     alignment: "N",
-    attacks: "1 Punch (100)",
-    level: "1",
+    attacks: "",
+    level: "0",
     stats: {
       ac: "10",
       hp: "10",
       mv: "near",
-      str: "+4",
+      str: "+0",
       dex: "+0",
-      con: "+2",
-      int: "-1",
-      wis: "+1",
-      cha: "-2"
+      con: "+0",
+      int: "+0",
+      wis: "+0",
+      cha: "+0"
     },
     specials: []
   }

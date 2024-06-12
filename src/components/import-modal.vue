@@ -46,7 +46,7 @@ const replaceContent = computed({
 <template>
   <Modal full v-model="showModal" :title="props.title ?? 'Import new content'">
     <Checkbox
-      label="Replace existing spells with the same names?"
+      label="Replace existing entries with the same names?"
       v-model="replaceContent"
     />
     <TextField
