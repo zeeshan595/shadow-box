@@ -97,7 +97,7 @@ export async function importSpells(text: string, replaceExistingItems = false) {
         };
       }
     } else if (/^Tier [0-9]+, [a-z\ ]+$/.test(line)) {
-      const matches = /^Tier ([0-9]+), ([a-z\ ]+)((Duration: ([a-zA-Z0-9\(\) ]+))?\s{0,}(Range: (Self|Close|Near|Far|Unlimited)))?$/.exec(line);
+      const matches = /^Tier ([0-9]+), ([a-z\ \,]+)((Duration: ([a-zA-Z0-9\(\) ]+))?\s{0,}(Range: (Self|Close|Near|Far|Unlimited)))?$/.exec(line);
       if (!matches) {
         throw new Error('test was successful but could not match tier or class');
       }
