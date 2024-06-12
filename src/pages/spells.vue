@@ -135,7 +135,7 @@ async function createSpellFinish() {
 async function upload(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    await importShadowdarkBook(data[0]);
+    alert("please use the import pdf button in the previous page");
   } else {
     await SpellsCollection.setMany(data);
   }
@@ -194,7 +194,7 @@ async function upload(data: any[] | null, type: "pdf" | "json") {
     download-file-name="spells"
   />
   <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">spells</h2>
+    <h2 class="text-align-center uppercase">spells ({{ spells.length }})</h2>
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="spell in filteredSpells"

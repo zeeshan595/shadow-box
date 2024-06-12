@@ -9,7 +9,7 @@ export const SPELLS_STORE = "spells";
 
 export const isReady = ref<boolean>(false);
 export const db = ref<IDBDatabase | null>(null);
-const request = indexedDB.open("shadow-sheet.online", 1);
+const request = indexedDB.open("shadow-box.online", 1);
 request.onerror = console.error;
 request.onupgradeneeded = function (event) {
   const db = request.result;

@@ -10,7 +10,6 @@ import {
   createMonster as createMonsterFn,
 } from "@/data/";
 import { v4 } from "uuid";
-import { importShadowdarkBook } from "@/services/pdf";
 import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
@@ -139,7 +138,7 @@ function createMonsterFinish() {
 async function upload(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    await importShadowdarkBook(data[0]);
+    alert('please use the import pdf button in the previous page');
   } else {
     await MonstersCollection.setMany(data);
   }
@@ -174,7 +173,7 @@ async function upload(data: any[] | null, type: "pdf" | "json") {
     download-file-name="monsters"
   />
   <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">monsters</h2>
+    <h2 class="text-align-center uppercase">monsters ({{ monsters.length }})</h2>
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="monster in filteredMonsters"

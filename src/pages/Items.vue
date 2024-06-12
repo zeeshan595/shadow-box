@@ -117,7 +117,7 @@ onMounted(() => {
 async function uploadData(data: any[] | null, type: "pdf" | "json") {
   if (!data) return;
   if (type === "pdf") {
-    await importShadowdarkBook(data[0]);
+    alert('please use the import pdf button in the previous page');
   } else {
     await ItemsCollection.setMany(data);
   }
@@ -147,7 +147,7 @@ async function uploadData(data: any[] | null, type: "pdf" | "json") {
     <ItemComponent v-if="randomMagicItem" :value="randomMagicItem" />
   </Modal>
   <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">magic items</h2>
+    <h2 class="text-align-center uppercase">magic items ({{ items.length }})</h2>
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="item in filteredItems"
