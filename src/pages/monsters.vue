@@ -135,13 +135,9 @@ function createMonsterFinish() {
   monsters.value.push(monster);
   createMonsterModalShown.value = false;
 }
-async function upload(data: any[] | null, type: "pdf" | "json") {
+async function upload(data: any[] | null) {
   if (!data) return;
-  if (type === "pdf") {
-    alert('please use the import pdf button in the previous page');
-  } else {
-    await MonstersCollection.setMany(data);
-  }
+  await MonstersCollection.setMany(data);
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 }
 </script>
@@ -173,7 +169,9 @@ async function upload(data: any[] | null, type: "pdf" | "json") {
     download-file-name="monsters"
   />
   <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">monsters ({{ monsters.length }})</h2>
+    <h2 class="text-align-center uppercase">
+      monsters ({{ monsters.length }})
+    </h2>
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="monster in filteredMonsters"

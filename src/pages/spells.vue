@@ -17,7 +17,6 @@ import Button from "@/components/button.vue";
 import SpellComponent from "@/components/spell.vue";
 import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
-import { importShadowdarkBook } from "@/services/pdf/";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -132,13 +131,9 @@ async function createSpellFinish() {
   spells.value.push(createSpell.value);
   isCreateSpellShown.value = false;
 }
-async function upload(data: any[] | null, type: "pdf" | "json") {
+async function upload(data: any[] | null) {
   if (!data) return;
-  if (type === "pdf") {
-    alert("please use the import pdf button in the previous page");
-  } else {
-    await SpellsCollection.setMany(data);
-  }
+  await SpellsCollection.setMany(data);
   SpellsCollection.getAll().then((s) => (spells.value = s));
 }
 </script>

@@ -14,7 +14,7 @@ const emits = defineEmits<{
   (e: "random"): void;
   (e: "add"): void;
   (e: "reset"): void;
-  (e: "upload", data: any[] | null, type: "pdf" | "json"): void;
+  (e: "upload", data: any[] | null): void;
 }>();
 
 function download() {
@@ -81,7 +81,7 @@ async function upload() {
     input.click();
   });
 
-  emits("upload", data, type);
+  emits("upload", data);
 }
 </script>
 

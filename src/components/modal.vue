@@ -2,6 +2,9 @@
 import { computed, watch, onMounted } from "vue";
 
 const props = defineProps<{
+  full?: boolean;
+  fullWidth?: boolean;
+  fullHeight?: boolean;
   modelValue: boolean;
   title: string;
 }>();
@@ -34,8 +37,12 @@ onMounted(() => {
   <div v-if="props.modelValue" class="modal-container">
     <div
       class="modal bg-paper shadow rounded justify-start align-start p10 gap10"
+      :class="{
+        'full-height': props.fullHeight || props.full,
+        'full-width': props.fullWidth || props.full,
+      }"
     >
-      <div class="flex-row" style="width: 100%">
+      <div class="flex-row flex-shrink flex-basis-0" style="width: 100%">
         <div class="bold flex-basis-100 uppercase">
           {{ title }}
         </div>
@@ -74,6 +81,13 @@ onMounted(() => {
     max-height: calc(100% - 100px);
     overflow-x: hidden;
     overflow-y: auto;
+    &.full-height {
+      height: 100%;
+    }
+    &.full-width {
+      width: 100%;
+      max-width: calc(100% - 50px);
+    }
   }
 }
 </style>

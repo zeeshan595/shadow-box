@@ -23,10 +23,6 @@ function onChange(payload: Event) {
   if (!target) return;
   emits("update:modelValue", target.value);
 }
-function contextMenu(e: MouseEvent) {
-  e.preventDefault();
-  emits("right-click");
-}
 function leftClick(e: MouseEvent) {
   e.preventDefault();
   emits("click");
@@ -42,7 +38,6 @@ function leftClick(e: MouseEvent) {
       'justify-space-between': props.spaceBetween,
       pointer: props.clickable,
     }"
-    @contextmenu="contextMenu"
     @click="leftClick"
   >
     <div

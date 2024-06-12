@@ -1,26 +1,30 @@
 <script setup lang="ts">
 import router from "@/router";
 import Button from "@/components/button.vue";
-import { uploadDocument } from "@/services/helpers";
-import { importShadowdarkBook } from "@/services/pdf";
+import Modal from "@/components/modal.vue";
+import { ref } from "vue";
+import TextField from "@/components/text-field.vue";
 
-async function importPdf() {
-  const { type, data } = await uploadDocument(".pdf");
-  if (!data) return;
-  if (type !== "pdf") {
-    return alert("please upload a PDF document!");
-  }
-  await importShadowdarkBook(data[0]);
-}
+const showImportModal = ref(false);
+const importText = ref("");
+
+async function importPdf() {}
 </script>
 
 <template>
+  <Modal full v-model="showImportModal" title="Import from PDFs">
+    <TextField
+      large
+      v-model="importText"
+      label="Add the text from PDF here in the correct format"
+    />
+  </Modal>
   <div class="gap10 p20 flex-row flex-wrap">
     <Button @click="() => router.push('/items')">Magic Items</Button>
     <Button @click="() => router.push('/monsters')">Monsters</Button>
     <Button @click="() => router.push('/spells')">Spells</Button>
   </div>
   <div class="gap10 p20 flex-row flex-wrap">
-    <Button @click="importPdf">Import PDFs</Button>
+    <Button @click="() => (showImportModal = true)">Import from PDFs</Button>
   </div>
 </template>

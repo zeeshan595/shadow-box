@@ -11,7 +11,6 @@ import Button from "@/components/button.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
-import { importShadowdarkBook } from "@/services/pdf";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -114,13 +113,9 @@ async function resetItems() {
 onMounted(() => {
   ItemsCollection.getAll().then((i) => (items.value = i));
 });
-async function uploadData(data: any[] | null, type: "pdf" | "json") {
+async function uploadData(data: any[] | null) {
   if (!data) return;
-  if (type === "pdf") {
-    alert('please use the import pdf button in the previous page');
-  } else {
-    await ItemsCollection.setMany(data);
-  }
+  await ItemsCollection.setMany(data);
   ItemsCollection.getAll().then((i) => (items.value = i));
 }
 </script>
@@ -147,7 +142,9 @@ async function uploadData(data: any[] | null, type: "pdf" | "json") {
     <ItemComponent v-if="randomMagicItem" :value="randomMagicItem" />
   </Modal>
   <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">magic items ({{ items.length }})</h2>
+    <h2 class="text-align-center uppercase">
+      magic items ({{ items.length }})
+    </h2>
     <div class="flex-row flex-wrap gap20">
       <div
         v-for="item in filteredItems"
