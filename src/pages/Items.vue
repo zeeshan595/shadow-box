@@ -129,7 +129,7 @@ async function onImport() {
     importerText.value,
     importerReplacesExistingContent.value
   );
-  items.value = [...items.value, ...newItems];
+  ItemsCollection.getAll().then((i) => (items.value = i));
   showImporter.value = false;
 }
 </script>

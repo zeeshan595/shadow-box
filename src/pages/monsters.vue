@@ -17,6 +17,7 @@ import Button from "@/components/button.vue";
 import MonsterComponent from "@/components/monster.vue";
 import MonsterEditComponent from "@/components/monster-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
+import { importMonsters } from "@/services/pdf";
 
 const monsters = ref<WithUUID<Monster>[]>([]);
 const search = ref<string>("");
@@ -142,12 +143,17 @@ async function upload(data: any[] | null) {
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 }
 
-const importerText = ref('');
+const importerText = ref("");
 const showImporter = ref(false);
 const importerReplacesExistingContent = ref(false);
-function onImport() {
+async function onImport() {
+  await importMonsters(
+    importerText.value,
+    importerReplacesExistingContent.value
+  );
+  MonstersCollection.getAll().then((m) => (monsters.value = m));
+  showImporter.value = false;
 }
-
 </script>
 
 <template>
@@ -177,9 +183,10 @@ function onImport() {
   <TopBar
     v-model="search"
     @add="createNewMonster"
-    @random="() => (randomMonsterPickerModalShown = true)"
+    @random="randomMonsterPickerModalShown = true"
     @reset="resetMonsters"
     @upload="upload"
+    @import="showImporter = true"
     :download-data="monsters"
     download-file-name="monsters"
   />

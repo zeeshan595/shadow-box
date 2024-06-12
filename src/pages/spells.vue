@@ -142,10 +142,10 @@ async function upload(data: any[] | null) {
 const importerText = ref("");
 const showImporter = ref(false);
 const importerReplacesExistingContent = ref(false);
-function onImport() {
-  importSpells(importerText.value, importerReplacesExistingContent.value).then(
-    () => SpellsCollection.getAll().then((s) => (spells.value = s))
-  );
+async function onImport() {
+  await importSpells(importerText.value, importerReplacesExistingContent.value);
+  SpellsCollection.getAll().then((s) => (spells.value = s));
+  showImporter.value = false;
 }
 </script>
 

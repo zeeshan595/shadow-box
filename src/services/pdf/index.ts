@@ -1,10 +1,11 @@
 import type { Item } from "@/data/items/type";
-import { ItemsCollection, SpellsCollection } from "../db/collections";
+import { ItemsCollection, MonstersCollection, SpellsCollection } from "../db/collections";
 import { v4 } from "uuid";
 import type { Spell } from "@/data/spells/type";
-import type { WithUUID } from "../db";
+import type { Monster } from "@/data/monsters/type";
+import { createMonster, createSpell } from "@/data";
 
-export async function importItems(text: string, replaceExistingItems = false): Promise<WithUUID<Item>[]> {
+export async function importItems(text: string, replaceExistingItems = false) {
   const lines = text.split('\n');
   let items: Item[] = [];
   let currentItem: Item = { name: '', flavourText: '' };
@@ -14,8 +15,7 @@ export async function importItems(text: string, replaceExistingItems = false): P
         currentItem.name = line;
       } else {
         items.push(currentItem);
-        currentItem = { name: '', flavourText: '' };
-        currentItem.name = line;
+        currentItem = { name: line, flavourText: '' };
       }
     } else if (/^Bonus[. -]+/.test(line)) {
       currentItem.bonus += '\n';
@@ -46,46 +46,25 @@ export async function importItems(text: string, replaceExistingItems = false): P
   }
   const itemsWithUUID = items.map(item => ({ uuid: v4(), ...item }));
   await ItemsCollection.setMany(itemsWithUUID);
-  return itemsWithUUID;
 }
 
 export async function importSpells(text: string, replaceExistingItems = false) {
   const lines = text.split('\n');
   let spells: Spell[] = [];
-  let tierAdded = false;
-  let durationAdded = false;
-  let rangeAdded = false;
   let currentSpell: Spell = {
+    ...createSpell(),
     name: '',
-    class: {},
-    duration: '',
-    range: 'Self',
-    text: '',
-    tier: -1
   };
   for (const line of lines) {
     if (/^[A-Z\ \'\,\’]+$/.test(line)) {
       if (currentSpell.name === '') {
         currentSpell.name = line;
       } else {
-        if (tierAdded && durationAdded && rangeAdded) {
-          spells.push(currentSpell);
-        } else {
-          alert(`${currentSpell.name} is incorrectly formatted`);
-        }
-
+        spells.push(currentSpell);
         currentSpell = {
-          name: '',
-          class: {},
-          duration: '',
-          range: 'Self',
-          text: '',
-          tier: -1
+          ...createSpell(),
+          name: line
         };
-        currentSpell.name = line;
-        tierAdded = false;
-        durationAdded = false;
-        rangeAdded = false;
       }
     } else if (/^Tier [0-9]+, [a-z\ ]+$/.test(line)) {
       const matches = /^Tier ([0-9]+), ([a-z\ ]+)$/.exec(line);
@@ -104,19 +83,16 @@ export async function importSpells(text: string, replaceExistingItems = false) {
         witch: classes.includes('witch'),
         wizard: classes.includes('wizard')
       };
-      tierAdded = true;
     } else if (/^Duration: /.test(line)) {
       const matches = /^Duration: ([A-Za-z0-9\(\) ]+)(\s+Range: (Self|Close|Near|Far|Unlimited)|\s*$)/.exec(line);
       if (!matches) {
         throw new Error('test was successful but could not match duration or range');
       }
       const duration = matches[1];
-      durationAdded = true;
       currentSpell.duration = duration.trim();
       const range = matches[3];
       if (range) {
         currentSpell.range = range as any;
-        rangeAdded = true;
       }
     } else if (/^Range: (Self|Close|Near|Far|Unlimited)$/.test(line)) {
       if (line.includes('Self')) {
@@ -130,7 +106,6 @@ export async function importSpells(text: string, replaceExistingItems = false) {
       } else if (line.includes('Unlimited')) {
         currentSpell.range = 'Unlimited';
       }
-      rangeAdded = true;
     } else {
       if (currentSpell.text !== '') {
         currentSpell.text += '\n';
@@ -150,5 +125,82 @@ export async function importSpells(text: string, replaceExistingItems = false) {
 }
 
 export async function importMonsters(text: string, replaceExistingItems = false) {
+  const lines = text.split('\n');
+  let monsters: Monster[] = [];
+  let currentMonster: Monster = {
+    ...createMonster(),
+    name: '',
+  };
+  for (const line of lines) {
+    if (/^[A-Z\ \'\,\’]+$/.test(line)) {
+      if (currentMonster.name === '') {
+        currentMonster.name = line.trim();
+      } else {
+        monsters.push(currentMonster);
+        currentMonster = {
+          ...createMonster(),
+          name: line
+        };
+      }
+    } else if (/^AC\s+[0-9\*]+/.test(line)) {
+      const matches1 = /^AC\s{0,}([0-9a-zA-Z\(\)\ \*]+),\s{0,}HP\s{0,}([0-9\*]+),\s{0,}ATK\s{0,}([a-zA-Z0-9\(\)\s+\*\ ]+),\s{0,}MV\s{0,}([a-zA-Z0-9\-\(\)\ ]+),/.exec(line);
+      const matches2 = /,\s{0,}S\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}D\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}C\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}I\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}W\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}Ch\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}AL\s{0,}(C|N|L)\s{0,},\s{0,}LV\s{0,}([0-9\*\-\+]+)$/.exec(line);
+      if (!matches1 || !matches2) {
+        throw new Error('test was successful but could not match monster stats');
+      }
+      const ac = matches1[1];
+      const hp = matches1[2];
+      const attacks = matches1[3];
+      const mv = matches1[4];
+      const str = matches2[1];
+      const dex = matches2[2];
+      const con = matches2[3];
+      const int = matches2[4];
+      const wis = matches2[5];
+      const cha = matches2[6];
+      const alignment = matches2[7];
+      const level = matches2[8];
+      currentMonster = {
+        ...currentMonster,
+        attacks,
+        alignment,
+        level,
+        stats: {
+          ...currentMonster.stats,
+          ac,
+          hp,
+          mv,
 
+          str,
+          dex,
+          con,
+          int,
+          wis,
+          cha
+        }
+      };
+    } else if (/^[A-Za-z\ ]{3,20}\. /.test(line)) {
+      const seperatorIndex = line.indexOf('.');
+      const name = line.slice(0, seperatorIndex);
+      const text = line.slice(seperatorIndex).replace(/^[. ]+/, '').trim();
+      currentMonster.specials.push({
+        name,
+        text
+      });
+    } else {
+      if (currentMonster.flavourText !== '') {
+        currentMonster.flavourText += '\n';
+      }
+      currentMonster.flavourText += line.trim();
+    }
+  }
+  if (currentMonster.name !== '') {
+    monsters.push(currentMonster);
+  }
+
+  if (!replaceExistingItems) {
+    const existingMonsters = await MonstersCollection.getAll();
+    monsters = monsters.filter(monster => existingMonsters.findIndex(m => m.name === monster.name) === -1);
+  }
+  await MonstersCollection.setMany(monsters.map(monster => ({ uuid: v4(), ...monster })));
 }
