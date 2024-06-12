@@ -15,6 +15,7 @@ const emits = defineEmits<{
   (e: "add"): void;
   (e: "reset"): void;
   (e: "upload", data: any[] | null): void;
+  (e: "import"): void;
 }>();
 
 function download() {
@@ -101,6 +102,9 @@ async function upload() {
     </Button>
     <Button @click="() => emits('reset')">
       <span class="material-symbols-outlined"> remove_selection </span>
+    </Button>
+    <Button @click="() => emits('import')">
+      <span class="material-symbols-outlined"> picture_as_pdf </span>
     </Button>
     <Button @click="upload">
       <span class="material-symbols-outlined"> upload </span>

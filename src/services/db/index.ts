@@ -80,18 +80,23 @@ export class Collection<T> {
     });
   }
   public async setMany(data: WithUUID<T>[]): Promise<WithUUID<T>[]> {
-    const { transaction, store } = await this.getObjectStore('readwrite');
-    const results: IDBRequest[] = [];
-    for (const entry of data) {
-      results.push(store.put(entry, entry.uuid));
-    }
-    transaction.commit();
-    return new Promise((resolve) => {
-      let finishedCounter = 1;
+    return new Promise(async (resolve) => {
+      if (data.length === 0) return resolve([]);
+      const { transaction, store } = await this.getObjectStore('readwrite');
+      const results: IDBRequest[] = [];
+      for (const entry of data) {
+        results.push(store.put(entry, entry.uuid));
+      }
+      transaction.commit();
+      let finishedCounter = 0;
       for (const entry of results) {
+        if (entry.readyState === 'done') {
+          finishedCounter++;
+          continue;
+        }
         function updateProgress() {
           finishedCounter++;
-          if (finishedCounter === results.length) {
+          if (finishedCounter >= results.length) {
             resolve(data);
           }
         }

@@ -16,6 +16,7 @@ import TextField from "@/components/text-field.vue";
 import Button from "@/components/button.vue";
 import MonsterComponent from "@/components/monster.vue";
 import MonsterEditComponent from "@/components/monster-edit.vue";
+import ImportModal from "@/components/import-modal.vue";
 
 const monsters = ref<WithUUID<Monster>[]>([]);
 const search = ref<string>("");
@@ -140,9 +141,23 @@ async function upload(data: any[] | null) {
   await MonstersCollection.setMany(data);
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 }
+
+const importerText = ref('');
+const showImporter = ref(false);
+const importerReplacesExistingContent = ref(false);
+function onImport() {
+}
+
 </script>
 
 <template>
+  <ImportModal
+    title="Import monsters"
+    v-model="importerText"
+    v-model:show-modal="showImporter"
+    v-model:replace-content="importerReplacesExistingContent"
+    @import="onImport"
+  />
   <Modal v-model="editMonsterModalShown" title="edit monster">
     <MonsterEditComponent v-if="editMonster" v-model="editMonster" />
     <Button @click="editMonsterFinish">Save Monster</Button>

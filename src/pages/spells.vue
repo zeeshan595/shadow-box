@@ -17,6 +17,8 @@ import Button from "@/components/button.vue";
 import SpellComponent from "@/components/spell.vue";
 import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
+import { importSpells } from "@/services/pdf";
+import ImportModal from "@/components/import-modal.vue";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -136,9 +138,25 @@ async function upload(data: any[] | null) {
   await SpellsCollection.setMany(data);
   SpellsCollection.getAll().then((s) => (spells.value = s));
 }
+
+const importerText = ref("");
+const showImporter = ref(false);
+const importerReplacesExistingContent = ref(false);
+function onImport() {
+  importSpells(importerText.value, importerReplacesExistingContent.value).then(
+    () => SpellsCollection.getAll().then((s) => (spells.value = s))
+  );
+}
 </script>
 
 <template>
+  <ImportModal
+    title="Import spells"
+    v-model="importerText"
+    v-model:show-modal="showImporter"
+    v-model:replace-content="importerReplacesExistingContent"
+    @import="onImport"
+  />
   <Modal v-model="isRandomSpellPickerShown" title="Random Spell Picker">
     <div class="flex-row align-center gap20">
       <TextField stat label="min tier" v-model="randomSpellPicker.minTier" />
@@ -185,6 +203,7 @@ async function upload(data: any[] | null) {
     @reset="resetSpells"
     @add="showCreateSpell"
     @upload="upload"
+    @import="showImporter = true"
     :download-data="spells"
     download-file-name="spells"
   />

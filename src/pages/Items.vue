@@ -11,6 +11,8 @@ import Button from "@/components/button.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
+import ImportModal from "@/components/import-modal.vue";
+import { importItems } from "@/services/pdf";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -118,15 +120,35 @@ async function uploadData(data: any[] | null) {
   await ItemsCollection.setMany(data);
   ItemsCollection.getAll().then((i) => (items.value = i));
 }
+
+const importerText = ref("");
+const showImporter = ref(false);
+const importerReplacesExistingContent = ref(false);
+async function onImport() {
+  const newItems = await importItems(
+    importerText.value,
+    importerReplacesExistingContent.value
+  );
+  items.value = [...items.value, ...newItems];
+  showImporter.value = false;
+}
 </script>
 
 <template>
+  <ImportModal
+    title="Import items"
+    v-model="importerText"
+    v-model:show-modal="showImporter"
+    v-model:replace-content="importerReplacesExistingContent"
+    @import="onImport"
+  />
   <TopBar
     v-model="search"
     @random="selectRandomMagicItem"
-    @add="() => (isCreateModalShown = true)"
+    @add="isCreateModalShown = true"
     @reset="resetItems"
     @upload="uploadData"
+    @import="showImporter = true"
     :download-data="items"
     download-file-name="items"
   />
