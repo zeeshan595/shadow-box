@@ -11,7 +11,7 @@ export function createSpell(): Spell {
     class: {
       wizard: true
     },
-    duration: "",
+    duration: "Instant",
     range: "Near",
     tier: 1,
     text: ""
