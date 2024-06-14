@@ -79,5 +79,6 @@ export function sendToPlayers<T extends ALL_DATA_TYPES>(type: DataType, data: T)
     SYNC_CHANNEL_ID,
     { type, data } as Payload<T>,
     { destination: "REMOTE" }
-  )
+  );
+  OBR.notification.show(`Sent ${DataType[type].toString()} to other players in the party`)
 }
