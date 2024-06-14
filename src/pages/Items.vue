@@ -12,7 +12,7 @@ import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
-import { importItems } from "@/services/import";
+import { importItems } from "@/services/importer";
 import * as Owlbear from "@/services/owlbear";
 
 const search = ref<string>("");

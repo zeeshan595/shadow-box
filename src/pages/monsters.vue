@@ -17,7 +17,7 @@ import Button from "@/components/button.vue";
 import MonsterComponent from "@/components/monster.vue";
 import MonsterEditComponent from "@/components/monster-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
-import { importMonsters } from "@/services/import";
+import { importMonsters } from "@/services/importer";
 import * as Owlbear from "@/services/owlbear";
 
 const monsters = ref<WithUUID<Monster>[]>([]);

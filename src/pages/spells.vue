@@ -17,7 +17,7 @@ import Button from "@/components/button.vue";
 import SpellComponent from "@/components/spell.vue";
 import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
-import { importSpells } from "@/services/import";
+import { importSpells } from "@/services/importer";
 import ImportModal from "@/components/import-modal.vue";
 import * as Owlbear from "@/services/owlbear";
 
