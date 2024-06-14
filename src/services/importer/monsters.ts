@@ -23,7 +23,7 @@ export async function importMonsters(text: string, replaceExistingItems = false)
         };
       }
     } else if (/^AC\s+[0-9\*]+/.test(line)) {
-      const matches1 = /^AC\s{0,}([0-9a-zA-Z\(\)\ \*\+]+),\s{0,}HP\s{0,}([0-9\*]+),\s{0,}ATK\s{0,}([a-zA-Z0-9\(\)\s+\*\ \/]+),\s{0,}MV\s{0,}([a-zA-Z0-9\-\(\)\ ]+),/.exec(line);
+      const matches1 = /^AC\s{0,}([0-9a-zA-Z\(\)\ \*\+]+),\s{0,}HP\s{0,}([0-9\*]+),\s{0,}ATK\s{0,}([a-zA-Z0-9\(\)\s+\*\ \/\,]+),\s{0,}MV\s{0,}([a-zA-Z0-9\-\(\)\ ]+),/.exec(line);
       const matches2 = /,\s{0,}S\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}D\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}C\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}I\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}W\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}Ch\s{0,}([0-9\*\-\+]+)\s{0,},\s{0,}AL\s{0,}(C|N|L)\s{0,},\s{0,}LV\s{0,}([0-9\*\-\+]+)$/.exec(line);
       if (!matches1 || !matches2) {
         throw new Error('test was successful but could not match monster stats');
