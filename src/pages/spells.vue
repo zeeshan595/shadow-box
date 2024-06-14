@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import {
   spells as CoreSpells,
   cloneSpell,
@@ -19,6 +19,7 @@ import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
 import { importSpells } from "@/services/pdf";
 import ImportModal from "@/components/import-modal.vue";
+import * as Owlbear from "@/services/owlbear";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -148,6 +149,14 @@ async function onImport() {
   SpellsCollection.getAll().then((s) => (spells.value = s));
   showImporter.value = false;
 }
+
+const isOwlbearReady = computed(() => Owlbear.isReady.value);
+async function sendSpellToPlayers(spell: WithUUID<Spell>) {
+  await Owlbear.sendToPlayers(Owlbear.DataType.Spell, cloneSpell(spell));
+}
+watch(Owlbear.lastUpdatedAt, () => {
+  SpellsCollection.getAll().then((s) => (spells.value = s));
+});
 </script>
 
 <template>
@@ -228,6 +237,13 @@ async function onImport() {
             @click="() => deleteSpell(spell)"
           >
             delete
+          </span>
+          <span
+            v-if="isOwlbearReady"
+            class="material-symbols-outlined pointer"
+            @click="() => sendSpellToPlayers(spell)"
+          >
+            send
           </span>
         </div>
         <SpellComponent :model-value="spell" />

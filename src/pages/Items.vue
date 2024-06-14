@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Item } from "@/data/items/type";
 import type { WithUUID } from "@/services/db";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { randomRange } from "@/services/helpers";
 import { ItemsCollection } from "@/services/db/collections";
 import { v4 } from "uuid";
@@ -13,6 +13,7 @@ import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
 import { importItems } from "@/services/pdf";
+import * as Owlbear from "@/services/owlbear";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -129,6 +130,14 @@ async function onImport() {
   ItemsCollection.getAll().then((i) => (items.value = i));
   showImporter.value = false;
 }
+
+const isOwlbearReady = computed(() => Owlbear.isReady.value);
+async function sendItemToPlayers(item: WithUUID<Item>) {
+  await Owlbear.sendToPlayers(Owlbear.DataType.Item, cloneItem(item));
+}
+watch(Owlbear.lastUpdatedAt, () => {
+  ItemsCollection.getAll().then((i) => (items.value = i));
+});
 </script>
 
 <template>
@@ -182,6 +191,13 @@ async function onImport() {
             @click="() => deleteItem(item)"
           >
             delete
+          </span>
+          <span
+            v-if="isOwlbearReady"
+            class="material-symbols-outlined pointer"
+            @click="() => sendItemToPlayers(item)"
+          >
+            send
           </span>
         </div>
         <ItemComponent :value="item" />

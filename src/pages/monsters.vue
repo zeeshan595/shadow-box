@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Monster } from "@/data/monsters/type";
 import type { WithUUID } from "@/services/db";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { randomRange } from "@/services/helpers";
 import { MonstersCollection } from "@/services/db/collections";
 import {
@@ -18,6 +18,7 @@ import MonsterComponent from "@/components/monster.vue";
 import MonsterEditComponent from "@/components/monster-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
 import { importMonsters } from "@/services/pdf";
+import * as Owlbear from "@/services/owlbear";
 
 const monsters = ref<WithUUID<Monster>[]>([]);
 const search = ref<string>("");
@@ -154,6 +155,14 @@ async function onImport() {
   MonstersCollection.getAll().then((m) => (monsters.value = m));
   showImporter.value = false;
 }
+
+const isOwlbearReady = computed(() => Owlbear.isReady.value);
+async function sendMonsterToPlayers(monster: WithUUID<Monster>) {
+  await Owlbear.sendToPlayers(Owlbear.DataType.Monster, cloneMonster(monster));
+}
+watch(Owlbear.lastUpdatedAt, () => {
+  MonstersCollection.getAll().then((m) => (monsters.value = m));
+});
 </script>
 
 <template>
@@ -212,6 +221,13 @@ async function onImport() {
             @click="() => deleteMonster(monster)"
           >
             delete
+          </span>
+          <span
+            v-if="isOwlbearReady"
+            class="material-symbols-outlined pointer"
+            @click="() => sendMonsterToPlayers(monster)"
+          >
+            send
           </span>
         </div>
         <MonsterComponent :value="monster" />
