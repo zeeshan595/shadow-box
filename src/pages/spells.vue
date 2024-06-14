@@ -65,10 +65,11 @@ function pickRandomSpell() {
     return alert("min or max tier is not a number");
   }
   const classes = randomSpellPicker.value.classes;
-  console.log(classes);
   const filteredSpells = spells.value.filter((spell) => {
+    if (spell.tier < minTier) return false;
+    if (spell.tier > maxTier) return false;
+
     for (const key of Object.keys(spell.class) as (keyof SpellClass)[]) {
-      console.log(spell.class[key]);
       if (classes[key] && spell.class[key]) {
         return true;
       }
