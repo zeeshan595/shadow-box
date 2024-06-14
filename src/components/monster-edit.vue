@@ -49,9 +49,9 @@ function removeSpecial(index: number) {
   <TextField large label="flavour text" v-model="value.flavourText" />
   <TextField label="attacks" v-model="value.attacks" />
   <TextField label="movement" v-model="value.stats.mv" />
+  <TextField label="AC" v-model="value.stats.ac" />
   <div class="flex-row gap10 flex-wrap">
     <TextField small stat label="level" v-model="value.level" />
-    <TextField small stat label="AC" v-model="value.stats.ac" />
     <TextField small stat label="HP" v-model="value.stats.hp" />
     <TextField small stat label="alignment" v-model="value.alignment" />
   </div>
