@@ -10,6 +10,7 @@ const props = defineProps<{
   modelValue: string;
   showModal: boolean;
   replaceContent: boolean;
+  placeholder?: "spell" | "monster" | "item";
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -49,11 +50,25 @@ const replaceContent = computed({
       label="Replace existing entries with the same names?"
       v-model="replaceContent"
     />
+    <a
+      href="https://docs.google.com/document/d/1zSftX9tBGPHMyHkZEDugHdqKsGua3tGLahTm8cNjgkI/edit?usp=sharing"
+      target="_blank"
+      class="primary-main"
+    >
+      View Import Rules
+    </a>
     <TextField
       large
       v-model="value"
       label="Add the text from PDF here in the correct format"
+      :placeholder="props.placeholder"
     />
     <Button @click="() => emits('import')">Import Content</Button>
   </Modal>
 </template>
+
+<style scoped>
+a:hover {
+  background: none;
+}
+</style>

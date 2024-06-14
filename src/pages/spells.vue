@@ -166,6 +166,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     v-model:show-modal="showImporter"
     v-model:replace-content="importerReplacesExistingContent"
     @import="onImport"
+    :placeholder="'spell'"
   />
   <Modal v-model="isRandomSpellPickerShown" title="Random Spell Picker">
     <div class="flex-row align-center gap20">

@@ -29,7 +29,6 @@ const text = computed(() => theme.value.text.primary);
 .container {
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;

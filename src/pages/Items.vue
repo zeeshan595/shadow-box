@@ -147,6 +147,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     v-model:show-modal="showImporter"
     v-model:replace-content="importerReplacesExistingContent"
     @import="onImport"
+    :placeholder="'item'"
   />
   <TopBar
     v-model="search"

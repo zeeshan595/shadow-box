@@ -172,6 +172,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     v-model:show-modal="showImporter"
     v-model:replace-content="importerReplacesExistingContent"
     @import="onImport"
+    :placeholder="'monster'"
   />
   <Modal v-model="editMonsterModalShown" title="edit monster">
     <MonsterEditComponent v-if="editMonster" v-model="editMonster" />

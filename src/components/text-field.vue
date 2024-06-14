@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 const props = defineProps<{
   label?: string;
   subLabel?: string;
@@ -10,6 +12,7 @@ const props = defineProps<{
   mobileView?: boolean;
   readonly?: boolean;
   clickable?: boolean;
+  placeholder?: "spell" | "monster" | "item";
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -27,6 +30,36 @@ function leftClick(e: MouseEvent) {
   e.preventDefault();
   emits("click");
 }
+
+const SPELL_IMPORT_PLACEHOLDER = `TELEPORT
+Tier 5, wizard Duration: Instant Range: Close
+You and any willing creatures you choose within close range teleport to a location you specify on your same plane.
+You can travel to a known teleportation sigil or to a location you've been before. Otherwise, you have a 50% chance of arriving off-target.
+`;
+const MONSTER_IMPORT_PLACEHOLDER = `DRYAD
+A coy, emerald-skinned fey covered in leaves. It bonds with and protects a tree.
+AC 13, HP 19, ATK 1 staff -1 (1d4) or 1 charm, MV near, S -1, D +2, C +1, I +1, W +3, Ch +4, AL N, LV 4
+Charm. Near, one creature, DC 14 CHA or friendship for 1d8 days.
+Meld. Step inside bonded tree. 
+`;
+const ITEM_IMPORT_PLACEHOLDER = `ARMOR OF THE ONI
+Black plate mail of lacquered, ironwood panels. The helm's visor is the face of a snarling oni.
+Bonus. +1 plate mail.
+Benefit. You can speak and understand Diabolic. Your melee weapon attacks deal +1 damage.
+Curse. You have disadvantage on attacks and spellcasting checks against demons.
+`;
+
+const placeholder = computed(() => {
+  switch (props.placeholder) {
+    case "item":
+      return ITEM_IMPORT_PLACEHOLDER;
+    case "monster":
+      return MONSTER_IMPORT_PLACEHOLDER;
+    case "spell":
+      return SPELL_IMPORT_PLACEHOLDER;
+  }
+  return undefined;
+});
 </script>
 
 <template>
@@ -67,6 +100,7 @@ function leftClick(e: MouseEvent) {
       :value="modelValue"
       :readonly="props.readonly"
       @change="onChange"
+      :placeholder="placeholder"
     ></textarea>
   </div>
 </template>
