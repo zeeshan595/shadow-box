@@ -17,6 +17,7 @@ import Button from "@/components/button.vue";
 import MonsterComponent from "@/components/monster.vue";
 import MonsterEditComponent from "@/components/monster-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
+import EntryActions from "@/components/entry-actions.vue";
 import { importMonsters } from "@/services/importer";
 import * as Owlbear from "@/services/owlbear";
 
@@ -156,7 +157,6 @@ async function onImport() {
   showImporter.value = false;
 }
 
-const isOwlbearReady = computed(() => Owlbear.isReady.value);
 async function sendMonsterToPlayers(monster: WithUUID<Monster>) {
   await Owlbear.sendToPlayers(Owlbear.DataType.Monster, cloneMonster(monster));
 }
@@ -210,27 +210,11 @@ watch(Owlbear.lastUpdatedAt, () => {
         class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
         style="max-width: 320px"
       >
-        <div class="flex-row gap20">
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => showEditMonster(monster)"
-          >
-            edit</span
-          >
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => deleteMonster(monster)"
-          >
-            delete
-          </span>
-          <span
-            v-if="isOwlbearReady"
-            class="material-symbols-outlined pointer"
-            @click="() => sendMonsterToPlayers(monster)"
-          >
-            send
-          </span>
-        </div>
+        <EntryActions
+          @edit="() => showEditMonster(monster)"
+          @delete="() => deleteMonster(monster)"
+          @share="() => sendMonsterToPlayers(monster)"
+        />
         <MonsterComponent :value="monster" />
       </div>
     </div>

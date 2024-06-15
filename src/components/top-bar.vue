@@ -91,26 +91,33 @@ async function upload() {
     class="top-bar flex-row gap20 bg-default p20"
     :class="{ 'mobile-view': isMobileView }"
   >
-    <Button @click="() => router.push('/')">
+    <Button class="tooltip" @click="() => router.push('/')">
       <span class="material-symbols-outlined"> arrow_back </span>
+      <span class="tooltiptext"> back </span>
     </Button>
-    <Button @click="() => emits('add')">
+    <Button class="tooltip" @click="() => emits('add')">
       <span class="material-symbols-outlined"> add </span>
+      <span class="tooltiptext"> create new </span>
     </Button>
-    <Button @click="() => emits('random')">
+    <Button class="tooltip" @click="() => emits('random')">
       <span class="material-symbols-outlined"> casino </span>
+      <span class="tooltiptext"> select random </span>
     </Button>
-    <Button @click="() => emits('reset')">
+    <Button class="tooltip" @click="() => emits('reset')">
       <span class="material-symbols-outlined"> remove_selection </span>
+      <span class="tooltiptext">reset to default</span>
     </Button>
-    <Button @click="() => emits('import')">
+    <Button class="tooltip" @click="() => emits('import')">
       <span class="material-symbols-outlined"> picture_as_pdf </span>
+      <span class="tooltiptext">import pdf</span>
     </Button>
-    <Button @click="upload">
+    <Button class="tooltip" @click="upload">
       <span class="material-symbols-outlined"> upload </span>
+      <span class="tooltiptext">upload json</span>
     </Button>
-    <Button @click="download" v-if="props.downloadData">
+    <Button class="tooltip" @click="download" v-if="props.downloadData">
       <span class="material-symbols-outlined"> download </span>
+      <span class="tooltiptext">download json</span>
     </Button>
     <Search
       :modelValue="props.modelValue"

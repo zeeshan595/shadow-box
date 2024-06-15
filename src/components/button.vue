@@ -15,6 +15,7 @@ const emits = defineEmits<{
 
 <style scoped lang="scss">
 button {
+  display: flex;
   cursor: pointer;
   padding: 10px 15px;
   outline: 0;
@@ -23,5 +24,7 @@ button {
   font-weight: bold;
   font-size: 14px;
   transition: 0.3s;
+  justify-content: center;
+  align-items: center;
 }
 </style>

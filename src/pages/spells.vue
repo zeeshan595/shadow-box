@@ -10,6 +10,8 @@ import type { WithUUID } from "@/services/db";
 import { SpellsCollection } from "@/services/db/collections";
 import { randomRange } from "@/services/helpers";
 import { v4 } from "uuid";
+import { importSpells } from "@/services/importer";
+import * as Owlbear from "@/services/owlbear";
 import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
@@ -17,9 +19,8 @@ import Button from "@/components/button.vue";
 import SpellComponent from "@/components/spell.vue";
 import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
-import { importSpells } from "@/services/importer";
+import EntryActions from "@/components/entry-actions.vue";
 import ImportModal from "@/components/import-modal.vue";
-import * as Owlbear from "@/services/owlbear";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -151,7 +152,6 @@ async function onImport() {
   showImporter.value = false;
 }
 
-const isOwlbearReady = computed(() => Owlbear.isReady.value);
 async function sendSpellToPlayers(spell: WithUUID<Spell>) {
   await Owlbear.sendToPlayers(Owlbear.DataType.Spell, cloneSpell(spell));
 }
@@ -227,27 +227,11 @@ watch(Owlbear.lastUpdatedAt, () => {
         class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
         style="max-width: 320px"
       >
-        <div class="flex-row gap20">
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => pickSpellToEdit(spell)"
-          >
-            edit</span
-          >
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => deleteSpell(spell)"
-          >
-            delete
-          </span>
-          <span
-            v-if="isOwlbearReady"
-            class="material-symbols-outlined pointer"
-            @click="() => sendSpellToPlayers(spell)"
-          >
-            send
-          </span>
-        </div>
+        <EntryActions
+          @edit="() => pickSpellToEdit(spell)"
+          @delete="() => deleteSpell(spell)"
+          @share="() => sendSpellToPlayers(spell)"
+        />
         <SpellComponent :model-value="spell" />
       </div>
     </div>

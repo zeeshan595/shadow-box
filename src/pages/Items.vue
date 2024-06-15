@@ -6,14 +6,15 @@ import { randomRange } from "@/services/helpers";
 import { ItemsCollection } from "@/services/db/collections";
 import { v4 } from "uuid";
 import { createItem, items as CoreItems, cloneItem } from "@/data";
+import { importItems } from "@/services/importer";
+import * as Owlbear from "@/services/owlbear";
 import TopBar from "@/components/top-bar.vue";
 import Button from "@/components/button.vue";
 import Modal from "@/components/modal.vue";
 import ItemComponent from "@/components/item.vue";
 import ItemEditComponent from "@/components/item-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
-import { importItems } from "@/services/importer";
-import * as Owlbear from "@/services/owlbear";
+import EntryActions from "@/components/entry-actions.vue";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -131,7 +132,6 @@ async function onImport() {
   showImporter.value = false;
 }
 
-const isOwlbearReady = computed(() => Owlbear.isReady.value);
 async function sendItemToPlayers(item: WithUUID<Item>) {
   await Owlbear.sendToPlayers(Owlbear.DataType.Item, cloneItem(item));
 }
@@ -180,27 +180,11 @@ watch(Owlbear.lastUpdatedAt, () => {
         class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
         style="max-width: 320px"
       >
-        <div class="flex-row gap20">
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => startEditingMagicItem(item)"
-          >
-            edit</span
-          >
-          <span
-            class="material-symbols-outlined pointer"
-            @click="() => deleteItem(item)"
-          >
-            delete
-          </span>
-          <span
-            v-if="isOwlbearReady"
-            class="material-symbols-outlined pointer"
-            @click="() => sendItemToPlayers(item)"
-          >
-            send
-          </span>
-        </div>
+        <EntryActions
+          @edit="() => startEditingMagicItem(item)"
+          @delete="() => () => deleteItem(item)"
+          @share="() => () => sendItemToPlayers(item)"
+        />
         <ItemComponent :value="item" />
       </div>
     </div>
