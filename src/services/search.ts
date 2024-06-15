@@ -21,7 +21,7 @@ function scoreSpell(terms: string[], spell: Spell): number {
 
     for (const classKey of classKeys) {
       if (classes[classKey] && spellClassToString({ [classKey]: true }) === term) {
-        score += 5;
+        score += 7;
       }
     }
 
@@ -31,18 +31,22 @@ function scoreSpell(terms: string[], spell: Spell): number {
 
     if (duration.startsWith(term) && term.length > 5) {
       score += 5;
-    } if (duration.includes(term) && term.length > 3) {
-      score += 1;
+    } else if (duration.includes(term) && term.length > 3) {
+      score += 2;
     }
 
     if (range.startsWith(term) && term.length > 5) {
       score += 5;
-    } if (range.includes(term) && term.length > 3) {
-      score += 1;
+    } else if (range.includes(term) && term.length > 3) {
+      score += 2;
     }
 
-    if (text.includes(term) && term.length > 3) {
-      score += 1;
+    if (text.includes(term)) {
+      if (term.length > 3) {
+        score += 2;
+      } else {
+        score += 1;
+      }
     }
   }
   return score;
