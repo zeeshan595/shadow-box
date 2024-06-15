@@ -12,7 +12,7 @@ const props = defineProps<{
   mobileView?: boolean;
   readonly?: boolean;
   clickable?: boolean;
-  placeholder?: "spell" | "monster" | "item";
+  placeholder?: "spell" | "monster" | "item" | string;
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -58,7 +58,7 @@ const placeholder = computed(() => {
     case "spell":
       return SPELL_IMPORT_PLACEHOLDER;
   }
-  return undefined;
+  return props.placeholder;
 });
 </script>
 
@@ -92,6 +92,7 @@ const placeholder = computed(() => {
       @input="onChange"
       :maxlength="props.stat ? 2 : undefined"
       :readonly="props.readonly"
+      :placeholder="props.placeholder"
     />
     <textarea
       v-if="props.large"

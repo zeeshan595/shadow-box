@@ -6,6 +6,7 @@ import { isMobileView } from "@/const";
 
 const props = defineProps<{
   modelValue: string;
+  placeholder?: string;
   downloadData?: any[];
   downloadFileName?: string;
 }>();
@@ -122,6 +123,7 @@ async function upload() {
     <Search
       :modelValue="props.modelValue"
       @update:modelValue="(val) => emits('update:modelValue', val)"
+      :placeholder="props.placeholder"
     />
   </div>
 </template>

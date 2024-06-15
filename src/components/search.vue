@@ -3,6 +3,7 @@ import TextField from "./text-field.vue";
 
 const props = defineProps<{
   modelValue: string;
+  placeholder?: string;
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -14,5 +15,6 @@ const emits = defineEmits<{
     label="search"
     :model-value="props.modelValue"
     @update:model-value="(value) => emits('update:modelValue', value)"
+    :placeholder="props.placeholder"
   />
 </template>
