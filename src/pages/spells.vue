@@ -21,6 +21,7 @@ import SpellEditComponent from "@/components/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
 import EntryActions from "@/components/entry-actions.vue";
 import ImportModal from "@/components/import-modal.vue";
+import { performSearch } from "@/services/search";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -28,12 +29,10 @@ const filteredSpells = computed(() => {
   if (search.value === "") {
     return spells.value.sort((a, b) => a.name.localeCompare(b.name));
   }
-  const searchText = search.value.toLowerCase();
-  return spells.value
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .filter((spell) => {
-      return spell.name.toLowerCase().includes(searchText);
-    });
+  return performSearch(
+    search.value,
+    spells.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 onMounted(() => {
   SpellsCollection.getAll().then((s) => (spells.value = s));
