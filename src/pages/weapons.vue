@@ -1,20 +1,109 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
+import type { WithUUID } from "@/services/db";
+import type { Weapon } from "@/data/weapons/type";
+import { weapons as coreWeapons } from "@/data/weapons/";
+import { WeaponsCollection } from "@/services/db/collections";
+import { createWeapon } from "@/data/weapons";
+import { randomRange } from "@/services/helpers";
 import TopBar from "@/components/top-bar.vue";
-import Weapon from "@/components/weapon.vue";
-import { weapons } from "@/data/weapons";
+import WeaponComponent from "@/components/weapon.vue";
+import Modal from "@/components/modal.vue";
+import WeaponEdit from "@/components/weapon-edit.vue";
+import Button from "@/components/button.vue";
+import EntryActions from "@/components/entry-actions.vue";
+import { DataType, sendToPlayers } from "@/services/owlbear";
 
 const search = ref("");
+const weapons = ref<WithUUID<Weapon>[]>([]);
+const filteredWeapons = computed(() => {
+  if (search.value === "") {
+    return weapons.value.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return weapons;
+});
+onMounted(() => {
+  WeaponsCollection.getAll().then((w) => (weapons.value = w));
+});
+
+const showCreateModal = ref(false);
+const creatingWeapon = ref<WithUUID<Weapon> | null>(null);
+function onCreateWeapon() {
+  if (!creatingWeapon.value) return;
+  WeaponsCollection.set(creatingWeapon.value?.uuid, creatingWeapon.value);
+  weapons.value.push(creatingWeapon.value);
+  creatingWeapon.value = null;
+  showCreateModal.value = false;
+}
+function showCreateWeapon() {
+  showCreateModal.value = true;
+  creatingWeapon.value = createWeapon();
+}
+
+const showEditModal = ref(false);
+const editingWeapon = ref<WithUUID<Weapon> | null>(null);
+function onEditWeapon() {
+  if (!editingWeapon.value) return;
+  WeaponsCollection.set(editingWeapon.value?.uuid, editingWeapon.value);
+  weapons.value.push(editingWeapon.value);
+  editingWeapon.value = null;
+  showEditModal.value = false;
+}
+function showEditWeapon(weapon: WithUUID<Weapon>) {
+  showEditModal.value = true;
+  editingWeapon.value = weapon;
+}
+
+const showRandomModal = ref(false);
+const randomWeapon = ref<WithUUID<Weapon> | null>(null);
+function selectRandomWeapon() {
+  randomWeapon.value = weapons.value[randomRange(0, weapons.value.length - 1)];
+  showRandomModal.value = true;
+}
+
+async function resetWeapons() {
+  await WeaponsCollection.clear();
+  await WeaponsCollection.setMany(coreWeapons);
+  weapons.value = [...coreWeapons];
+}
+async function uploadWeapons(data: any[] | null) {
+  if (!data) return;
+  await WeaponsCollection.clear();
+  await WeaponsCollection.setMany(data);
+  weapons.value = data;
+}
+
+function onDeleteWeapon(weapon: WithUUID<Weapon>) {
+  const DELETE_TEXT = `Are you sure you want to delete ${weapon.name}?`;
+  if (!confirm(DELETE_TEXT)) return;
+  WeaponsCollection.delete(weapon.uuid);
+  weapons.value = weapons.value.filter((weapon) => weapon.uuid !== weapon.uuid);
+}
+
+function onShareWeapon(weapon: WithUUID<Weapon>) {
+  sendToPlayers(DataType.Weapon, weapon);
+}
 </script>
 
 <template>
+  <Modal v-if="creatingWeapon" v-model="showCreateModal" title="Create Weapon">
+    <WeaponEdit v-model="creatingWeapon" />
+    <Button @click="onCreateWeapon">Create Weapon</Button>
+  </Modal>
+  <Modal v-if="editingWeapon" v-model="showEditModal" title="Edit Weapon">
+    <WeaponEdit v-model="editingWeapon" />
+    <Button @click="onEditWeapon">Save Weapon</Button>
+  </Modal>
+  <Modal v-if="randomWeapon" v-model="showRandomModal" title="Random weapon">
+    <WeaponComponent :model-value="randomWeapon" />
+  </Modal>
   <TopBar
     v-model="search"
-    :download-data="[]"
-    @add=""
-    @random=""
-    @reset=""
-    @import=""
+    :download-data="weapons"
+    @add="showCreateWeapon"
+    @random="selectRandomWeapon"
+    @reset="resetWeapons"
+    @upload="uploadWeapons"
     :show-add="true"
     :show-random="true"
     :show-reset="true"
@@ -26,10 +115,15 @@ const search = ref("");
     <div class="flex-row flex-wrap gap20">
       <div
         class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
-        v-for="weapon of weapons"
-        style="max-width: 320px;"
+        v-for="weapon of filteredWeapons"
+        style="max-width: 320px"
       >
-        <Weapon :model-value="{ uuid: '', ...weapon }" />
+        <EntryActions
+          @edit="() => showEditWeapon(weapon)"
+          @delete="() => onDeleteWeapon(weapon)"
+          @share="() => onShareWeapon(weapon)"
+        />
+        <WeaponComponent :model-value="weapon" />
       </div>
     </div>
   </div>

@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { init } from "./migrations/init";
+import { addNewTables } from "./migrations/addNewTables";
 
 export type WithUUID<T> = T & { uuid: string };
 
@@ -12,13 +13,17 @@ export const ROLL_TABLES_STORE = "roll_tables";
 
 export const isReady = ref<boolean>(false);
 export const db = ref<IDBDatabase | null>(null);
-const request = indexedDB.open("shadow-box.online", 1);
+const request = indexedDB.open("shadow-box.online", 2);
 request.onerror = console.error;
 request.onupgradeneeded = function (event) {
   const db = request.result;
   switch (event.oldVersion) {
     case 0:
       init(db);
+      addNewTables(db);
+      break;
+    case 1:
+      addNewTables(db);
       break;
   }
 };

@@ -1,18 +1,31 @@
 import { ref } from 'vue';
 import OBR from '@owlbear-rodeo/sdk';
+import { ArmorsCollection, ItemsCollection, MonstersCollection, RollTablesCollection, SpellsCollection, WeaponsCollection } from './db/collections';
 import type { Collection, WithUUID } from './db';
 import type { Spell } from '@/data/spells/type';
 import type { Monster } from '@/data/monsters/type';
 import type { Item } from '@/data/items/type';
-import { ItemsCollection, MonstersCollection, SpellsCollection } from './db/collections';
+import type { Weapon } from '@/data/weapons/type';
+import type { Armor } from '@/data/armors/type';
+import type { RollTable } from '@/data/rollTables';
 
 export const SYNC_CHANNEL_ID = 'owlbear.shadow-box.sync';
 
-export type ALL_DATA_TYPES = WithUUID<Spell> | WithUUID<Monster> | WithUUID<Item>;
+export type ALL_DATA_TYPES = |
+  WithUUID<Spell> |
+  WithUUID<Monster> |
+  WithUUID<Item> |
+  WithUUID<Weapon> |
+  WithUUID<Armor> |
+  WithUUID<RollTable>;
+
 export enum DataType {
   Item,
   Monster,
-  Spell
+  Spell,
+  Weapon,
+  Armor,
+  RollTable
 };
 export type Payload<T extends ALL_DATA_TYPES> = {
   type: DataType;
@@ -31,7 +44,7 @@ if (OBR.isAvailable) {
       const payload = event.data as Payload<ALL_DATA_TYPES>;
       const itemType = DataType[payload.type].toString();
 
-      let collection: Collection<Spell | Monster | Item> | null = null;
+      let collection: Collection<Spell | Monster | Item | Weapon | Armor | RollTable> | null = null;
       switch (payload.type) {
         case DataType.Item:
           collection = ItemsCollection;
@@ -41,6 +54,15 @@ if (OBR.isAvailable) {
           break;
         case DataType.Spell:
           collection = SpellsCollection;
+          break;
+        case DataType.Weapon:
+          collection = WeaponsCollection;
+          break;
+        case DataType.Armor:
+          collection = ArmorsCollection;
+          break;
+        case DataType.RollTable:
+          collection = RollTablesCollection;
           break;
         default:
           console.warn('unrecognised item was sent');
