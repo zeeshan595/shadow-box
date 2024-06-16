@@ -62,6 +62,8 @@ function selectRandomWeapon() {
 }
 
 async function resetWeapons() {
+  const RESET_TEXT = `Are you sure you want to reset weapons to be default weapons from core shadow dark rulebook?`;
+  if (!confirm(RESET_TEXT)) return;
   await WeaponsCollection.clear();
   await WeaponsCollection.setMany(coreWeapons);
   weapons.value = [...coreWeapons];
@@ -77,7 +79,7 @@ function onDeleteWeapon(weapon: WithUUID<Weapon>) {
   const DELETE_TEXT = `Are you sure you want to delete ${weapon.name}?`;
   if (!confirm(DELETE_TEXT)) return;
   WeaponsCollection.delete(weapon.uuid);
-  weapons.value = weapons.value.filter((weapon) => weapon.uuid !== weapon.uuid);
+  weapons.value = weapons.value.filter((w) => weapon.uuid !== w.uuid);
 }
 
 function onShareWeapon(weapon: WithUUID<Weapon>) {
