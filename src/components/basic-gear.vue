@@ -4,7 +4,7 @@
     <div class="table-row">
       <span class="bold uppercase">Item</span>
       <span class="bold uppercase">Cost</span>
-      <span class="bold uppercase">Quantity</span>
+      <span class="bold uppercase">Quantity per gear slot</span>
     </div>
     <div class="table-row">
       <span>Arrows (20)</span>
@@ -14,22 +14,17 @@
     <div class="table-row">
       <span>Backpack</span>
       <span>2gp</span>
-      <span>1 (1 Free)</span>
+      <span>1 (first one free to carry)</span>
     </div>
     <div class="table-row">
-      <span>Caltrops (one bag)</span>
+      <span>Caltrops (1 Bag)</span>
       <span>5sp</span>
       <span>1</span>
     </div>
     <div class="table-row">
       <span>Coin</span>
       <span>Varies</span>
-      <span>100 (100 Free)</span>
-    </div>
-    <div class="table-row">
-      <span>Coin</span>
-      <span>Varies</span>
-      <span>100 (100F)</span>
+      <span>100 (first 100 free to carry)</span>
     </div>
     <div class="table-row">
       <span>Crossbow bolts (20)</span>
@@ -135,7 +130,7 @@
 
     span {
       &:nth-child(1) {
-        width: calc(100% - 240px);
+        width: calc(100% - 380px);
         min-width: 80px;
         text-align: left;
       }
@@ -145,7 +140,7 @@
         text-align: center;
       }
       &:nth-child(3) {
-        width: 120px;
+        width: 200px;
         text-align: center;
       }
     }
