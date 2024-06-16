@@ -97,10 +97,10 @@
       <span>1</span>
     </div>
     <div class="crawling-kit">
-      <span>
+      <span class="font-small">
         <span class="font-small bold uppercase">Crawling kit</span>
-        For <span class="bold">7gp</span> you get Backpack, Flint and steel,
-        Torch(2), Rations(3), Iron spikes(10), Grappling hook, Rope (60')
+        For <span class="bold font-small">7gp</span> you get Backpack, Flint and steel,
+        Torch(2), Rations(3), Iron spikes(10), Grappling hook, Rope 60'
       </span>
     </div>
   </div>
