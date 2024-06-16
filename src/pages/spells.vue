@@ -216,8 +216,13 @@ watch(Owlbear.lastUpdatedAt, () => {
     @upload="upload"
     @import="showImporter = true"
     :download-data="spells"
-    download-file-name="spells"
-    placeholder="wizard,1,acid"
+    search-placeholder="wizard,1,acid"
+    :show-add="true"
+    :show-random="true"
+    :show-reset="true"
+    :show-import="true"
+    :show-upload="true"
+    :show-download="true"
   />
   <div class="gap20 p20">
     <h2 class="text-align-center uppercase">spells ({{ spells.length }})</h2>

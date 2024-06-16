@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "./pages/Home.vue";
+import HomePage from "./pages/home.vue";
 import Items from './pages/Items.vue';
 import Monsters from './pages/monsters.vue';
 import Spells from './pages/spells.vue';
-import RollTables from "./pages/RollTables.vue"
+import RollTables from "./pages/roll-tables.vue"
+import Weapons from './pages/weapons.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
       path: "/spells",
       name: "Spells",
       component: Spells,
+    },
+    {
+      path: '/weapons',
+      name: 'Weapons',
+      component: Weapons
     },
     {
       path: "/roll-tables",

@@ -10,6 +10,9 @@ import BasicGear from "@/components/basic-gear.vue";
       <Button @click="() => router.push('/items')">Magic Items</Button>
       <Button @click="() => router.push('/monsters')">Monsters</Button>
       <Button @click="() => router.push('/spells')">Spells</Button>
+      <Button @click="() => router.push('/weapons')">Weapons</Button>
+      <Button @click="() => router.push('/armors')">Armor</Button>
+      <Button @click="() => router.push('/roll-tables')">roll tables</Button>
     </div>
     <BasicGear />
   </div>

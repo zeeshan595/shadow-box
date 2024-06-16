@@ -6,9 +6,14 @@ import { isMobileView } from "@/const";
 
 const props = defineProps<{
   modelValue: string;
-  placeholder?: string;
+  showAdd?: boolean;
+  showRandom?: boolean;
+  showReset?: boolean;
+  showImport?: boolean;
+  showUpload?: boolean;
+  showDownload?: boolean;
   downloadData?: any[];
-  downloadFileName?: string;
+  searchPlaceholder?: string;
 }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
@@ -20,13 +25,9 @@ const emits = defineEmits<{
 }>();
 
 function download() {
-  const file = new File(
-    [JSON.stringify(props.downloadData)],
-    `${props.downloadFileName ?? "download"}.json`,
-    {
-      type: "text/json",
-    }
-  );
+  const file = new File([JSON.stringify(props.downloadData)], `backup.json`, {
+    type: "text/json",
+  });
   // Create a link and set the URL using `createObjectURL`
   const link = document.createElement("a");
   link.style.display = "none";
@@ -89,41 +90,53 @@ async function upload() {
 
 <template>
   <div
-    class="top-bar flex-row gap20 bg-default p20"
+    class="top-bar flex-row gap20 bg-default p20 justify-start"
     :class="{ 'mobile-view': isMobileView }"
   >
     <Button class="tooltip" @click="() => router.push('/')">
       <span class="material-symbols-outlined"> arrow_back </span>
       <span class="tooltiptext"> back </span>
     </Button>
-    <Button class="tooltip" @click="() => emits('add')">
+    <Button class="tooltip" @click="() => emits('add')" v-if="props.showAdd">
       <span class="material-symbols-outlined"> add </span>
       <span class="tooltiptext"> create new </span>
     </Button>
-    <Button class="tooltip" @click="() => emits('random')">
+    <Button
+      class="tooltip"
+      @click="() => emits('random')"
+      v-if="props.showRandom"
+    >
       <span class="material-symbols-outlined"> casino </span>
       <span class="tooltiptext"> select random </span>
     </Button>
-    <Button class="tooltip" @click="() => emits('reset')">
-      <span class="material-symbols-outlined"> remove_selection </span>
+    <Button
+      class="tooltip"
+      @click="() => emits('reset')"
+      v-if="props.showReset"
+    >
+      <span class="material-symbols-outlined"> delete_history </span>
       <span class="tooltiptext">reset to default</span>
     </Button>
-    <Button class="tooltip" @click="() => emits('import')">
+    <Button
+      class="tooltip"
+      @click="() => emits('import')"
+      v-if="props.showImport"
+    >
       <span class="material-symbols-outlined"> picture_as_pdf </span>
       <span class="tooltiptext">import pdf</span>
     </Button>
-    <Button class="tooltip" @click="upload">
+    <Button class="tooltip" @click="upload" v-if="props.showUpload">
       <span class="material-symbols-outlined"> upload </span>
       <span class="tooltiptext">upload json</span>
     </Button>
-    <Button class="tooltip" @click="download" v-if="props.downloadData">
+    <Button class="tooltip" @click="download" v-if="props.showDownload">
       <span class="material-symbols-outlined"> download </span>
       <span class="tooltiptext">download json</span>
     </Button>
     <Search
       :modelValue="props.modelValue"
       @update:modelValue="(val) => emits('update:modelValue', val)"
-      :placeholder="props.placeholder"
+      :placeholder="props.searchPlaceholder"
     />
   </div>
 </template>

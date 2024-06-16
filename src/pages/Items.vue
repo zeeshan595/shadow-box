@@ -157,7 +157,12 @@ watch(Owlbear.lastUpdatedAt, () => {
     @upload="uploadData"
     @import="showImporter = true"
     :download-data="items"
-    download-file-name="items"
+    :show-add="true"
+    :show-random="true"
+    :show-reset="true"
+    :show-import="true"
+    :show-upload="true"
+    :show-download="true"
   />
   <Modal v-model="isCreateModalShown" title="Create Magic Item">
     <ItemEditComponent v-model="newMagicItem" />

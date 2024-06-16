@@ -6,6 +6,9 @@ export type WithUUID<T> = T & { uuid: string };
 export const ITEMS_STORE = "items";
 export const MONSTERS_STORE = "monsters";
 export const SPELLS_STORE = "spells";
+export const WEAPONS_STORE = "weapons";
+export const ARMOR_STORE = "armors";
+export const ROLL_TABLES_STORE = "roll_tables";
 
 export const isReady = ref<boolean>(false);
 export const db = ref<IDBDatabase | null>(null);
