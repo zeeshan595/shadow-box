@@ -2,9 +2,9 @@
   <div class="basic-gear">
     <span class="font-large bold uppercase">basic gear</span>
     <div class="table-row">
-      <span>Item</span>
-      <span>Cost</span>
-      <span>Quantity</span>
+      <span class="bold uppercase">Item</span>
+      <span class="bold uppercase">Cost</span>
+      <span class="bold uppercase">Quantity</span>
     </div>
     <div class="table-row">
       <span>Arrows (20)</span>
