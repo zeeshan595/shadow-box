@@ -1,5 +1,5 @@
 <template>
-  <div class="align-center gap10">
+  <div class="basic-gear">
     <span class="font-large bold uppercase">basic gear</span>
     <div class="table-row">
       <span>Item</span>
@@ -112,35 +112,42 @@
 </template>
 
 <style scoped lang="scss">
-.crawling-kit {
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-bottom: 40px;
-  padding-top: 10px;
-}
-.table-row {
-  flex-direction: row;
-  gap: 20px;
-  border-bottom: 1px solid black;
-  padding-bottom: 10px;
-  padding-right: 10px;
-  padding-left: 10px;
-  width: calc(100% - 40px);
+.basic-gear {
+  align-self: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 800px;
 
-  span {
-    &:nth-child(1) {
-      width: calc(100% - 240px);
-      min-width: 80px;
-      text-align: left;
-    }
-    &:nth-child(2) {
-      width: 100px;
+  .crawling-kit {
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 40px;
+    padding-top: 10px;
+  }
+  .table-row {
+    flex-direction: row;
+    gap: 20px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+    width: calc(100% - 40px);
 
-      text-align: center;
-    }
-    &:nth-child(3) {
-      width: 120px;
-      text-align: center;
+    span {
+      &:nth-child(1) {
+        width: calc(100% - 240px);
+        min-width: 80px;
+        text-align: left;
+      }
+      &:nth-child(2) {
+        width: 100px;
+
+        text-align: center;
+      }
+      &:nth-child(3) {
+        width: 120px;
+        text-align: center;
+      }
     }
   }
 }
