@@ -2,73 +2,14 @@ import type { Armor } from "@/data/armors/type";
 import type { Item } from "@/data/items/type";
 import type { Monster } from "@/data/monsters/type";
 import type { RollTable } from "@/data/roll-tables/type";
-import { spellClassToString, type Spell, type SpellClass } from "@/data/spells/type";
+import type { Spell } from "@/data/spells/type";
 import type { Weapon } from "@/data/weapons/type";
-
-function scoreSpell(terms: string[], spell: Spell): number {
-  const name = spell.name.toLowerCase();
-  const tier = spell.tier;
-  const classes = spell.class;
-  const duration = spell.duration.toLowerCase();
-  const range = spell.range.toLowerCase();
-  const text = spell.text.toLowerCase();
-  const classKeys = Object.keys(classes) as (keyof SpellClass)[];
-
-  let score = 0;
-  for (const term of terms) {
-    if (name.startsWith(term) && term.length > 5) {
-      score += 10;
-    } else if (name.includes(term) && term.length > 3) {
-      score += 5;
-    }
-
-    for (const classKey of classKeys) {
-      if (classes[classKey] && spellClassToString({ [classKey]: true }) === term) {
-        score += 7;
-      }
-    }
-
-    if (tier.toString() === term) {
-      score += 5;
-    }
-
-    if (duration.startsWith(term) && term.length > 5) {
-      score += 5;
-    } else if (duration.includes(term) && term.length > 3) {
-      score += 2;
-    }
-
-    if (range.startsWith(term) && term.length > 5) {
-      score += 5;
-    } else if (range.includes(term) && term.length > 3) {
-      score += 2;
-    }
-
-    if (text.includes(term)) {
-      if (term.length > 3) {
-        score += 2;
-      } else {
-        score += 1;
-      }
-    }
-  }
-  return score;
-}
-function scoreMonster(terms: string[], monster: Monster): number {
-  return 0;
-}
-function scoreItem(terms: string[], item: Item): number {
-  return 0;
-}
-function scoreWeapon(terms: string[], weapon: Weapon): number {
-  return 0;
-}
-function scoreArmor(terms: string[], armor: Armor): number {
-  return 0;
-}
-function scoreRollTable(terms: string[], rollTable: RollTable): number {
-  return 0;
-}
+import { scoreSpell } from './spell';
+import { scoreMonster } from './monster';
+import { scoreItem } from './item';
+import { scoreWeapon } from './weapon';
+import { scoreArmor } from './armor';
+import { scoreRollTable } from './rollTable';
 
 function isSpell(entry: SearchTypes): entry is Spell {
   return (entry as Spell).range !== undefined;
