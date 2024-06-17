@@ -7,7 +7,7 @@ import type { Monster } from '@/data/monsters/type';
 import type { Item } from '@/data/items/type';
 import type { Weapon } from '@/data/weapons/type';
 import type { Armor } from '@/data/armors/type';
-import type { RollTable } from '@/data/rollTables';
+import type { RollTable } from '@/data/roll-tables/type';
 
 export const SYNC_CHANNEL_ID = 'owlbear.shadow-box.sync';
 
