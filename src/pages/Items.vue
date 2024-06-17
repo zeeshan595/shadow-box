@@ -140,8 +140,8 @@ async function onImport() {
   showImporter.value = false;
 }
 
-async function sendItemToPlayers(item: WithUUID<Item>) {
-  await Owlbear.sendToPlayers(Owlbear.DataType.Item, cloneItem(item));
+function sendItemToPlayers(item: WithUUID<Item>) {
+  Owlbear.sendToPlayers(Owlbear.DataType.Item, cloneItem(item));
 }
 async function onDeleteAll() {
   const DELETE_TEXT = "Are you sure you want to delete ALL items?";
@@ -193,8 +193,8 @@ async function onDeleteAll() {
     <Entry v-for="item in filteredItems">
       <EntryActions
         @edit="() => startEditingMagicItem(item)"
-        @delete="() => () => deleteItem(item)"
-        @share="() => () => sendItemToPlayers(item)"
+        @delete="() => deleteItem(item)"
+        @share="() => sendItemToPlayers(item)"
       />
       <ItemComponent :value="item" />
     </Entry>
