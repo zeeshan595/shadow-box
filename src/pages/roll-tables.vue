@@ -15,6 +15,7 @@ import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
 import { performSearch } from "@/services/search";
 import * as Owlbear from '@/services/owlbear';
+import { cloneRollTable } from "@/data/roll-tables";
 
 const ROLL_TABLES_PLACEHOLDER = `Appearance,Personality,Flaw
 Beautiful,Faithful,Sloth
@@ -116,7 +117,7 @@ async function onDelete(rollTable: WithUUID<RollTable>) {
   rollTables.value = rollTables.value.filter((r) => r.uuid !== rollTable.uuid);
 }
 function onShare(rollTable: WithUUID<RollTable>) {
-  sendToPlayers(DataType.RollTable, rollTable);
+  sendToPlayers(DataType.RollTable, cloneRollTable(rollTable));
 }
 
 const showRandomRoll = ref(false);

@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import type { WithUUID } from "@/services/db";
 import type { Weapon } from "@/data/weapons/type";
-import { weapons as coreWeapons } from "@/data/weapons/";
+import { cloneWeapon, weapons as coreWeapons } from "@/data/weapons/";
 import { WeaponsCollection } from "@/services/db/collections";
 import { createWeapon } from "@/data/weapons";
 import { randomRange } from "@/services/helpers";
@@ -94,7 +94,7 @@ function onDeleteWeapon(weapon: WithUUID<Weapon>) {
 }
 
 function onShareWeapon(weapon: WithUUID<Weapon>) {
-  sendToPlayers(DataType.Weapon, weapon);
+  sendToPlayers(DataType.Weapon, cloneWeapon(weapon));
 }
 async function onDeleteAll() {
   const DELETE_TEXT = "Are you sure you want to delete ALL weapons?";

@@ -11,7 +11,7 @@ import EntryActions from "@/components/entry-actions.vue";
 import Modal from "@/components/modal.vue";
 import ArmorEdit from "@/components/armor/armor-edit.vue";
 import Button from "@/components/button.vue";
-import { createArmor } from "@/data/armors";
+import { cloneArmor, createArmor } from "@/data/armors";
 import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
 import { armors as CoreArmors } from "@/data/armors/";
@@ -70,7 +70,7 @@ function onEditFinish() {
 }
 
 function onShare(armor: WithUUID<Armor>) {
-  sendToPlayers(DataType.Armor, armor);
+  sendToPlayers(DataType.Armor, cloneArmor(armor));
 }
 
 const showRandomArmor = ref(false);

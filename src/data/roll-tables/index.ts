@@ -11,3 +11,11 @@ export function createRollTable(): WithUUID<RollTable> {
     table: []
   }
 }
+export function cloneRollTable(rollTable: WithUUID<RollTable>): WithUUID<RollTable> {
+  return {
+    ...rollTable,
+    table: rollTable.table.map(t => ([
+      ...t
+    ]))
+  }
+}

@@ -63,3 +63,9 @@ export function createArmor(): WithUUID<Armor> {
     properties: ''
   }
 }
+
+export function cloneArmor(armor: WithUUID<Armor>): WithUUID<Armor> {
+  return {
+    ...armor
+  }
+}

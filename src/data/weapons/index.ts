@@ -151,3 +151,9 @@ export function createWeapon(): WithUUID<Weapon> {
     properties: ''
   }
 }
+
+export function cloneWeapon(weapon: WithUUID<Weapon>): WithUUID<Weapon> {
+  return {
+    ...weapon
+  };
+}
