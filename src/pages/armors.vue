@@ -102,16 +102,16 @@ async function onDeleteAll() {
 </script>
 
 <template>
-  <Modal v-if="creatingArmor" v-model="showCreateArmor" title="Create Armor">
+  <Modal v-model="showCreateArmor" title="Create Armor">
     <ArmorEdit v-model="creatingArmor" />
     <Button @click="onCreateFinish">Create Armor</Button>
   </Modal>
-  <Modal v-if="editingArmor" v-model="showEditArmor" title="Edit Armor">
+  <Modal v-model="showEditArmor" title="Edit Armor">
     <ArmorEdit v-model="editingArmor" />
     <Button @click="onEditFinish">Save Armor</Button>
   </Modal>
-  <Modal v-if="randomArmor" v-model="showRandomArmor" title="Random Armor">
-    <ArmorComponent :model-value="randomArmor" />
+  <Modal v-model="showRandomArmor" title="Random Armor">
+    <ArmorComponent v-if=randomArmor :model-value="randomArmor" />
   </Modal>
   <TopBar
     v-model="search"

@@ -16,7 +16,7 @@ import { DataType, sendToPlayers } from "@/services/owlbear";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
 import { performSearch } from "@/services/search";
-import * as Owlbear from '@/services/owlbear';
+import * as Owlbear from "@/services/owlbear";
 
 const search = ref("");
 const weapons = ref<WithUUID<Weapon>[]>([]);
@@ -105,16 +105,16 @@ async function onDeleteAll() {
 </script>
 
 <template>
-  <Modal v-if="creatingWeapon" v-model="showCreateModal" title="Create Weapon">
+  <Modal v-model="showCreateModal" title="Create Weapon">
     <WeaponEdit v-model="creatingWeapon" />
     <Button @click="onCreateWeapon">Create Weapon</Button>
   </Modal>
-  <Modal v-if="editingWeapon" v-model="showEditModal" title="Edit Weapon">
+  <Modal v-model="showEditModal" title="Edit Weapon">
     <WeaponEdit v-model="editingWeapon" />
     <Button @click="onEditWeapon">Save Weapon</Button>
   </Modal>
-  <Modal v-if="randomWeapon" v-model="showRandomModal" title="Random weapon">
-    <WeaponComponent :model-value="randomWeapon" />
+  <Modal v-model="showRandomModal" title="Random weapon">
+    <WeaponComponent v-if="randomWeapon" :model-value="randomWeapon" />
   </Modal>
   <TopBar
     v-model="search"
