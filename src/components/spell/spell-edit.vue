@@ -4,7 +4,7 @@ import type { WithUUID } from "@/services/db";
 import { stringToNum } from "@/services/helpers";
 import { computed } from "vue";
 import TextField from "@/components/text-field.vue";
-import Checkbox from "./checkbox.vue";
+import Checkbox from "@/components/checkbox.vue";
 import { cloneSpell } from "@/data";
 
 const props = defineProps<{

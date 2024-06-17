@@ -11,10 +11,12 @@ import * as Owlbear from "@/services/owlbear";
 import TopBar from "@/components/top-bar.vue";
 import Button from "@/components/button.vue";
 import Modal from "@/components/modal.vue";
-import ItemComponent from "@/components/item.vue";
-import ItemEditComponent from "@/components/item-edit.vue";
+import ItemComponent from "@/components/item/item.vue";
+import ItemEditComponent from "@/components/item/item-edit.vue";
 import ImportModal from "@/components/import-modal.vue";
 import EntryActions from "@/components/entry-actions.vue";
+import EntryContainer from "@/components/entry-container.vue";
+import Entry from "@/components/entry.vue";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -175,23 +177,14 @@ watch(Owlbear.lastUpdatedAt, () => {
   <Modal v-model="isRandomModalShown" title="random magic item">
     <ItemComponent v-if="randomMagicItem" :value="randomMagicItem" />
   </Modal>
-  <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">
-      magic items ({{ items.length }})
-    </h2>
-    <div class="flex-row flex-wrap gap20">
-      <div
-        v-for="item in filteredItems"
-        class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
-        style="max-width: 320px"
-      >
-        <EntryActions
-          @edit="() => startEditingMagicItem(item)"
-          @delete="() => () => deleteItem(item)"
-          @share="() => () => sendItemToPlayers(item)"
-        />
-        <ItemComponent :value="item" />
-      </div>
-    </div>
-  </div>
+  <EntryContainer :title="`magic items (${items.length})`">
+    <Entry v-for="item in filteredItems">
+      <EntryActions
+        @edit="() => startEditingMagicItem(item)"
+        @delete="() => () => deleteItem(item)"
+        @share="() => () => sendItemToPlayers(item)"
+      />
+      <ItemComponent :value="item" />
+    </Entry>
+  </EntryContainer>
 </template>

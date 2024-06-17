@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import type { Weapon } from "@/data/weapons/type";
 import type { WithUUID } from "@/services/db";
-import TextField from "./text-field.vue";
+import TextField from "@/components/text-field.vue";
 
 const props = defineProps<{
   modelValue: WithUUID<Weapon>;

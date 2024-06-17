@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TextField from "./text-field.vue";
-import Button from "./button.vue";
+import TextField from "@/components/text-field.vue";
+import Button from "@/components/button.vue";
 import type { Monster } from "@/data/monsters/type";
 import type { WithUUID } from "@/services/db";
 import { cloneMonster } from "@/data";

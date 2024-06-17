@@ -7,12 +7,14 @@ import { WeaponsCollection } from "@/services/db/collections";
 import { createWeapon } from "@/data/weapons";
 import { randomRange } from "@/services/helpers";
 import TopBar from "@/components/top-bar.vue";
-import WeaponComponent from "@/components/weapon.vue";
+import WeaponComponent from "@/components/weapon/weapon.vue";
 import Modal from "@/components/modal.vue";
-import WeaponEdit from "@/components/weapon-edit.vue";
+import WeaponEdit from "@/components/weapon/weapon-edit.vue";
 import Button from "@/components/button.vue";
 import EntryActions from "@/components/entry-actions.vue";
 import { DataType, sendToPlayers } from "@/services/owlbear";
+import EntryContainer from "@/components/entry-container.vue";
+import Entry from "@/components/entry.vue";
 
 const search = ref("");
 const weapons = ref<WithUUID<Weapon>[]>([]);
@@ -112,23 +114,16 @@ function onShareWeapon(weapon: WithUUID<Weapon>) {
     :show-upload="true"
     :show-download="true"
   />
-  <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">weapons ({{ weapons.length }})</h2>
-    <div class="flex-row flex-wrap gap20">
-      <div
-        class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
-        v-for="weapon of filteredWeapons"
-        style="max-width: 320px"
-      >
-        <EntryActions
-          @edit="() => showEditWeapon(weapon)"
-          @delete="() => onDeleteWeapon(weapon)"
-          @share="() => onShareWeapon(weapon)"
-        />
-        <WeaponComponent :model-value="weapon" />
-      </div>
-    </div>
-  </div>
+  <EntryContainer :title="`weapons (${weapons.length})`">
+    <Entry v-for="weapon in filteredWeapons">
+      <EntryActions
+        @edit="() => showEditWeapon(weapon)"
+        @delete="() => onDeleteWeapon(weapon)"
+        @share="() => onShareWeapon(weapon)"
+      />
+      <WeaponComponent :model-value="weapon" />
+    </Entry>
+  </EntryContainer>
 </template>
 
 <style scoped lang="scss"></style>

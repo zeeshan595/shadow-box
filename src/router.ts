@@ -5,6 +5,7 @@ import Monsters from './pages/monsters.vue';
 import Spells from './pages/spells.vue';
 import RollTables from "./pages/roll-tables.vue"
 import Weapons from './pages/weapons.vue';
+import Armors from "./pages/armors.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/weapons',
       name: 'Weapons',
       component: Weapons
+    },
+    {
+      path: '/armors',
+      name: 'Armors',
+      component: Armors
     },
     {
       path: "/roll-tables",

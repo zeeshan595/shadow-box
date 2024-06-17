@@ -16,12 +16,14 @@ import TopBar from "@/components/top-bar.vue";
 import Modal from "@/components/modal.vue";
 import TextField from "@/components/text-field.vue";
 import Button from "@/components/button.vue";
-import SpellComponent from "@/components/spell.vue";
-import SpellEditComponent from "@/components/spell-edit.vue";
+import SpellComponent from "@/components/spell/spell.vue";
+import SpellEditComponent from "@/components/spell/spell-edit.vue";
 import Checkbox from "@/components/checkbox.vue";
 import EntryActions from "@/components/entry-actions.vue";
 import ImportModal from "@/components/import-modal.vue";
 import { performSearch } from "@/services/search";
+import EntryContainer from "@/components/entry-container.vue";
+import Entry from "@/components/entry.vue";
 
 const search = ref<string>("");
 const spells = ref<WithUUID<Spell>[]>([]);
@@ -224,21 +226,14 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-upload="true"
     :show-download="true"
   />
-  <div class="gap20 p20">
-    <h2 class="text-align-center uppercase">spells ({{ spells.length }})</h2>
-    <div class="flex-row flex-wrap gap20">
-      <div
-        v-for="spell in filteredSpells"
-        class="bg-paper p20 rounded flex-shrink justify-start align-center text-align-center shadow gap10 align-self-start"
-        style="max-width: 320px"
-      >
-        <EntryActions
-          @edit="() => pickSpellToEdit(spell)"
-          @delete="() => deleteSpell(spell)"
-          @share="() => sendSpellToPlayers(spell)"
-        />
-        <SpellComponent :model-value="spell" />
-      </div>
-    </div>
-  </div>
+  <EntryContainer :title="`spells (${spells.length})`">
+    <Entry v-for="spell in filteredSpells">
+      <EntryActions
+        @edit="() => pickSpellToEdit(spell)"
+        @delete="() => deleteSpell(spell)"
+        @share="() => sendSpellToPlayers(spell)"
+      />
+      <SpellComponent :model-value="spell" />
+    </Entry>
+  </EntryContainer>
 </template>
