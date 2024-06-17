@@ -12,6 +12,7 @@ const props = defineProps<{
   showImport?: boolean;
   showUpload?: boolean;
   showDownload?: boolean;
+  showDelete?: boolean;
   downloadData?: any[];
   searchPlaceholder?: string;
 }>();
@@ -22,6 +23,7 @@ const emits = defineEmits<{
   (e: "reset"): void;
   (e: "upload", data: any[] | null): void;
   (e: "import"): void;
+  (e: "delete"): void;
 }>();
 
 function download() {
@@ -116,6 +118,10 @@ async function upload() {
     >
       <span class="material-symbols-outlined"> delete_history </span>
       <span class="tooltiptext">reset to default</span>
+    </Button>
+    <Button class="tooltip" @click="() => emits('delete')">
+      <span class="material-symbols-outlined"> delete </span>
+      <span class="tooltiptext">delete all entries</span>
     </Button>
     <Button
       class="tooltip"

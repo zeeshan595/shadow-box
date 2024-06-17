@@ -119,6 +119,7 @@ const placeholder = computed(() => {
 
   input[type="text"],
   textarea {
+    width: calc(100% - 20px);
     font-size: 20px;
     padding: 5px 10px;
     border-radius: 7px;

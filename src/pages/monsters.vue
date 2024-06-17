@@ -39,6 +39,9 @@ const filteredMonsters = computed<WithUUID<Monster>[]>(() => {
 onMounted(() => {
   MonstersCollection.getAll().then((m) => (monsters.value = m));
 });
+watch(Owlbear.lastUpdatedAt, () => {
+  MonstersCollection.getAll().then((s) => (monsters.value = s));
+});
 
 const editMonsterModalShown = ref(false);
 const randomMonsterPickerModalShown = ref(false);
@@ -147,9 +150,12 @@ async function onImport() {
 async function sendMonsterToPlayers(monster: WithUUID<Monster>) {
   await Owlbear.sendToPlayers(Owlbear.DataType.Monster, cloneMonster(monster));
 }
-watch(Owlbear.lastUpdatedAt, () => {
-  MonstersCollection.getAll().then((m) => (monsters.value = m));
-});
+async function onDeleteAll() {
+  const DELETE_TEXT = "Are you sure you want to delete ALL monsters?";
+  if (!confirm(DELETE_TEXT)) return;
+  await MonstersCollection.clear();
+  monsters.value = [];
+}
 </script>
 
 <template>
@@ -183,6 +189,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     @random="randomMonsterPickerModalShown = true"
     @reset="resetMonsters"
     @upload="upload"
+    @delete="onDeleteAll"
     @import="showImporter = true"
     :download-data="monsters"
     :show-add="true"
@@ -191,6 +198,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-import="true"
     :show-upload="true"
     :show-download="true"
+    :show-delete="true"
     search-placeholder="fur,ape,13,4"
   />
   <EntryContainer :title="`monsters (${monsters.length})`">

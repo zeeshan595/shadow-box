@@ -31,6 +31,13 @@ const filteredItems = computed<WithUUID<Item>[]>(() => {
     items.value.sort((a, b) => a.name.localeCompare(b.name))
   );
 });
+onMounted(() => {
+  ItemsCollection.getAll().then((i) => (items.value = i));
+});
+watch(Owlbear.lastUpdatedAt, () => {
+  ItemsCollection.getAll().then((i) => (items.value = i));
+});
+
 const isRandomModalShown = ref(false);
 const randomMagicItem = ref<Item>();
 function selectRandomMagicItem() {
@@ -118,9 +125,6 @@ async function resetItems() {
     ItemsCollection.getAll().then((i) => (items.value = i));
   }
 }
-onMounted(() => {
-  ItemsCollection.getAll().then((i) => (items.value = i));
-});
 async function uploadData(data: any[] | null) {
   if (!data) return;
   await ItemsCollection.setMany(data);
@@ -139,9 +143,12 @@ async function onImport() {
 async function sendItemToPlayers(item: WithUUID<Item>) {
   await Owlbear.sendToPlayers(Owlbear.DataType.Item, cloneItem(item));
 }
-watch(Owlbear.lastUpdatedAt, () => {
-  ItemsCollection.getAll().then((i) => (items.value = i));
-});
+async function onDeleteAll() {
+  const DELETE_TEXT = "Are you sure you want to delete ALL items?";
+  if (!confirm(DELETE_TEXT)) return;
+  await ItemsCollection.clear();
+  items.value = [];
+}
 </script>
 
 <template>
@@ -159,6 +166,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     @add="isCreateModalShown = true"
     @reset="resetItems"
     @upload="uploadData"
+    @delete="onDeleteAll"
     @import="showImporter = true"
     :download-data="items"
     :show-add="true"
@@ -167,6 +175,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-import="true"
     :show-upload="true"
     :show-download="true"
+    :show-delete="true"
     search-placeholder="+1 plate,disadvantage"
   />
   <Modal v-model="isCreateModalShown" title="Create Magic Item">

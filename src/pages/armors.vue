@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import type { WithUUID } from "@/services/db";
 import type { Armor } from "@/data/armors/type";
 import { ArmorsCollection } from "@/services/db/collections";
@@ -16,6 +16,7 @@ import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
 import { armors as CoreArmors } from "@/data/armors/";
 import { performSearch } from "@/services/search";
+import * as Owlbear from "@/services/owlbear";
 
 const search = ref("");
 const armors = ref<WithUUID<Armor>[]>([]);
@@ -31,6 +32,9 @@ const filteredArmor = computed(() => {
 });
 onMounted(() => {
   ArmorsCollection.getAll().then((a) => (armors.value = a));
+});
+watch(Owlbear.lastUpdatedAt, () => {
+  ArmorsCollection.getAll().then((i) => (armors.value = i));
 });
 
 const showCreateArmor = ref(false);
@@ -89,6 +93,12 @@ async function onUpload(data: any[] | null) {
   await ArmorsCollection.setMany(data);
   armors.value = data;
 }
+async function onDeleteAll() {
+  const DELETE_TEXT = "Are you sure you want to delete ALL armors?";
+  if (!confirm(DELETE_TEXT)) return;
+  await ArmorsCollection.clear();
+  armors.value = [];
+}
 </script>
 
 <template>
@@ -110,11 +120,13 @@ async function onUpload(data: any[] | null) {
     @random="onRandom"
     @reset="onReset"
     @upload="onUpload"
+    @delete="onDeleteAll"
     :show-add="true"
     :show-random="true"
     :show-reset="true"
     :show-upload="true"
     :show-download="true"
+    :show-delete="true"
     search-placeholder="11 + DEX,+2"
   />
   <EntryContainer>

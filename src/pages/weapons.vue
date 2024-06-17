@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import type { WithUUID } from "@/services/db";
 import type { Weapon } from "@/data/weapons/type";
 import { weapons as coreWeapons } from "@/data/weapons/";
@@ -16,6 +16,7 @@ import { DataType, sendToPlayers } from "@/services/owlbear";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
 import { performSearch } from "@/services/search";
+import * as Owlbear from '@/services/owlbear';
 
 const search = ref("");
 const weapons = ref<WithUUID<Weapon>[]>([]);
@@ -31,6 +32,9 @@ const filteredWeapons = computed(() => {
 });
 onMounted(() => {
   WeaponsCollection.getAll().then((w) => (weapons.value = w));
+});
+watch(Owlbear.lastUpdatedAt, () => {
+  WeaponsCollection.getAll().then((s) => (weapons.value = s));
 });
 
 const showCreateModal = ref(false);
@@ -92,6 +96,12 @@ function onDeleteWeapon(weapon: WithUUID<Weapon>) {
 function onShareWeapon(weapon: WithUUID<Weapon>) {
   sendToPlayers(DataType.Weapon, weapon);
 }
+async function onDeleteAll() {
+  const DELETE_TEXT = "Are you sure you want to delete ALL weapons?";
+  if (!confirm(DELETE_TEXT)) return;
+  await WeaponsCollection.clear();
+  weapons.value = [];
+}
 </script>
 
 <template>
@@ -113,6 +123,7 @@ function onShareWeapon(weapon: WithUUID<Weapon>) {
     @random="selectRandomWeapon"
     @reset="resetWeapons"
     @upload="uploadWeapons"
+    @delete="onDeleteAll"
     :show-add="true"
     :show-random="true"
     :show-reset="true"

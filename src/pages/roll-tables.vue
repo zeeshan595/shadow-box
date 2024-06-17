@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import type { WithUUID } from "@/services/db";
 import type { RollTable } from "@/data/roll-tables/type";
 import { RollTablesCollection } from "@/services/db/collections";
-import { createRollTable } from "@/data/roll-tables";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
 import TopBar from "@/components/top-bar.vue";
@@ -15,6 +14,7 @@ import EntryActions from "@/components/entry-actions.vue";
 import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
 import { performSearch } from "@/services/search";
+import * as Owlbear from '@/services/owlbear';
 
 const ROLL_TABLES_PLACEHOLDER = `Appearance,Personality,Flaw
 Beautiful,Faithful,Sloth
@@ -37,8 +37,11 @@ const filteredRollTables = computed(() => {
 onMounted(() => {
   RollTablesCollection.getAll().then((r) => (rollTables.value = r));
 });
+watch(Owlbear.lastUpdatedAt, () => {
+  RollTablesCollection.getAll().then((s) => (rollTables.value = s));
+});
 
-async function onReset() {
+async function onDeleteAll() {
   const RESET_TEXT = "Are you sure you want to delete all roll tables?";
   if (!confirm(RESET_TEXT)) return;
   await RollTablesCollection.clear();
@@ -173,10 +176,10 @@ function onRandomRoll(rollTable: WithUUID<RollTable>) {
     :download-data="rollTables"
     download-file-name="roll-tables"
     @add="onCreate"
-    @reset="onReset"
+    @delete="onDeleteAll"
     @upload="onUpload"
     :show-add="true"
-    :show-reset="true"
+    :show-delete="true"
     :show-upload="true"
     :show-download="true"
   />

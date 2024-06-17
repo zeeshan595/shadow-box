@@ -159,6 +159,12 @@ async function sendSpellToPlayers(spell: WithUUID<Spell>) {
 watch(Owlbear.lastUpdatedAt, () => {
   SpellsCollection.getAll().then((s) => (spells.value = s));
 });
+async function onDeleteAll() {
+  const DELETE_TEXT = "Are you sure you want to delete ALL spells?";
+  if (!confirm(DELETE_TEXT)) return;
+  await SpellsCollection.clear();
+  spells.value = [];
+}
 </script>
 
 <template>
@@ -217,6 +223,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     @add="showCreateSpell"
     @upload="upload"
     @import="showImporter = true"
+    @delete="onDeleteAll"
     :download-data="spells"
     search-placeholder="wizard,1,acid"
     :show-add="true"
@@ -225,6 +232,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-import="true"
     :show-upload="true"
     :show-download="true"
+    :show-delete="true"
   />
   <EntryContainer :title="`spells (${spells.length})`">
     <Entry v-for="spell in filteredSpells">
