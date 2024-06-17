@@ -12,6 +12,8 @@ import Button from "@/components/button.vue";
 import TextField from "@/components/text-field.vue";
 import { v4 } from "uuid";
 import EntryActions from "@/components/entry-actions.vue";
+import { DataType, sendToPlayers } from "@/services/owlbear";
+import { randomRange } from "@/services/helpers";
 
 const ROLL_TABLES_PLACEHOLDER = `Appearance,Personality,Flaw
 Beautiful,Faithful,Sloth
@@ -50,7 +52,6 @@ async function onCreate() {
   creatingRollTableName.value = "";
 }
 async function onCreateFinish() {
-  if (!creatingRollTable.value) return;
   const rows = creatingRollTable.value.split("\n");
   if (rows.length < 2) {
     return alert("you must have a heading and at least 1 entry");
@@ -68,9 +69,76 @@ async function onCreateFinish() {
   rollTables.value.push(rollTable);
   showCreateModal.value = false;
 }
+
+const showEditModal = ref(false);
+const editingRollTableUuid = ref("");
+const editingRollTableName = ref("");
+const editingRollTable = ref("");
+function onEdit(rollTable: WithUUID<RollTable>) {
+  showEditModal.value = true;
+  editingRollTableName.value = rollTable.name;
+  editingRollTable.value = rollTable.table.map((r) => r.join(",")).join("\n");
+  editingRollTableUuid.value = rollTable.uuid;
+}
+async function onEditFinish() {
+  const rows = editingRollTable.value.split("\n");
+  if (rows.length < 2) {
+    return alert("you must have a heading and at least 1 entry");
+  }
+  const rollTable: WithUUID<RollTable> = {
+    uuid: editingRollTableUuid.value,
+    name: editingRollTableName.value,
+    table: [],
+  };
+  for (const row of rows) {
+    const entries = row.split(",").map((r) => r.trim());
+    rollTable.table.push(entries);
+  }
+  await RollTablesCollection.set(rollTable.uuid, rollTable);
+  rollTables.value = rollTables.value.filter((r) => r.uuid !== rollTable.uuid);
+  rollTables.value.push(rollTable);
+  showEditModal.value = false;
+}
+async function onDelete(rollTable: WithUUID<RollTable>) {
+  const DELETE_TEXT = `Are you sure you want to delete the roll table named ${rollTable.name}`;
+  if (!confirm(DELETE_TEXT)) return;
+  await RollTablesCollection.delete(rollTable.uuid);
+  rollTables.value = rollTables.value.filter((r) => r.uuid !== rollTable.uuid);
+}
+function onShare(rollTable: WithUUID<RollTable>) {
+  sendToPlayers(DataType.RollTable, rollTable);
+}
+
+const showRandomRoll = ref(false);
+const rollResults = ref<string[]>([]);
+const rollResultsHeadings = ref<string[]>([]);
+function onRandomRoll(rollTable: WithUUID<RollTable>) {
+  const results: string[] = [];
+  rollResultsHeadings.value = rollTable.table[0];
+  for (let i = 0; i < rollTable.table[0].length; i++) {
+    const roll = randomRange(1, rollTable.table.length - 1);
+    results.push(rollTable.table[roll][i]);
+  }
+  rollResults.value = results;
+  showRandomRoll.value = true;
+}
 </script>
 
 <template>
+  <Modal v-model="showRandomRoll" title="Roll Table Result">
+    <div class="table gap10">
+      <div class="table-row flex-row gap10">
+        <span class="table-cell" v-for="cell in rollResultsHeadings">
+          {{ cell }}
+        </span>
+      </div>
+      <div class="table-row flex-row gap10">
+        <span class="table-cell" v-for="cell in rollResults">
+          {{ cell }}
+        </span>
+      </div>
+    </div>
+  </Modal>
   <Modal full v-model="showCreateModal" title="Create Roll Table">
     <div class="flex-shrink flex-basis-0">
       <TextField v-model="creatingRollTableName" label="name" />
@@ -81,6 +149,17 @@ async function onCreateFinish() {
       :placeholder="ROLL_TABLES_PLACEHOLDER"
     />
     <Button @click="onCreateFinish">Create</Button>
+  </Modal>
+  <Modal full v-model="showEditModal" title="Edit Roll Tables">
+    <div class="flex-shrink flex-basis-0">
+      <TextField v-model="editingRollTableName" label="name" />
+    </div>
+    <TextField
+      large
+      v-model="editingRollTable"
+      :placeholder="ROLL_TABLES_PLACEHOLDER"
+    />
+    <Button @click="onEditFinish">Save</Button>
   </Modal>
   <TopBar
     v-model="search"
@@ -101,20 +180,24 @@ async function onCreateFinish() {
     </span>
     <template v-else>
       <Entry max-width="640" v-for="rollTable in filteredRollTables">
-        <EntryActions show-roll-action />
-        <span class="roll-table-title uppercase bold">{{ rollTable.name }}</span>
+        <EntryActions
+          show-roll-action
+          @random="() => onRandomRoll(rollTable)"
+          @edit="() => onEdit(rollTable)"
+          @delete="() => onDelete(rollTable)"
+          @share="() => onShare(rollTable)"
+        />
+        <span class="uppercase bold">
+          {{ rollTable.name }}
+        </span>
         <div class="table gap10">
           <div
             class="table-row flex-row gap10"
             v-for="(rows, index) in rollTable.table"
           >
             <span>
-              <template v-if="index > 0">
-                {{ index }}.
-              </template>
-              <template v-else>
-                &nbsp;
-              </template>
+              <template v-if="index > 0"> {{ index }}. </template>
+              <template v-else> &nbsp; </template>
             </span>
             <span class="table-cell" v-for="cell in rows">{{ cell }}</span>
           </div>
@@ -125,10 +208,8 @@ async function onCreateFinish() {
 </template>
 
 <style scoped lang="scss">
-.roll-table-title {
-  padding-bottom: 10px;
-}
 .table {
+  padding-top: 10px;
   width: 100%;
   .table-row {
     width: 100%;
