@@ -22,6 +22,7 @@ import { importMonsters } from "@/services/importer";
 import * as Owlbear from "@/services/owlbear";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
+import { performSearch } from "@/services/search";
 
 const monsters = ref<WithUUID<Monster>[]>([]);
 const search = ref<string>("");
@@ -30,26 +31,10 @@ const filteredMonsters = computed<WithUUID<Monster>[]>(() => {
     return monsters.value.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  const lowerCaseSearch = search.value.toLowerCase();
-  return monsters.value
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .filter((monster) => {
-      if (monster.name.toLowerCase().includes(lowerCaseSearch)) {
-        return true;
-      }
-      if (monster.attacks.toLowerCase().includes(lowerCaseSearch)) {
-        return true;
-      }
-      if (monster.level.toLowerCase().includes(lowerCaseSearch)) {
-        return true;
-      }
-      for (const special of monster.specials) {
-        if (special.name.toLowerCase().includes(lowerCaseSearch)) {
-          return true;
-        }
-      }
-      return false;
-    });
+  return performSearch(
+    search.value,
+    monsters.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 onMounted(() => {
   MonstersCollection.getAll().then((m) => (monsters.value = m));

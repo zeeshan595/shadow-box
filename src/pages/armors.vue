@@ -15,6 +15,7 @@ import { createArmor } from "@/data/armors";
 import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
 import { armors as CoreArmors } from "@/data/armors/";
+import { performSearch } from "@/services/search";
 
 const search = ref("");
 const armors = ref<WithUUID<Armor>[]>([]);
@@ -23,7 +24,10 @@ const filteredArmor = computed(() => {
     return armors.value.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  armors.value;
+  return performSearch(
+    search.value,
+    armors.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 onMounted(() => {
   ArmorsCollection.getAll().then((a) => (armors.value = a));

@@ -15,6 +15,7 @@ import EntryActions from "@/components/entry-actions.vue";
 import { DataType, sendToPlayers } from "@/services/owlbear";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
+import { performSearch } from "@/services/search";
 
 const search = ref("");
 const weapons = ref<WithUUID<Weapon>[]>([]);
@@ -22,7 +23,10 @@ const filteredWeapons = computed(() => {
   if (search.value === "") {
     return weapons.value.sort((a, b) => a.name.localeCompare(b.name));
   }
-  return weapons;
+  return performSearch(
+    search.value,
+    weapons.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 onMounted(() => {
   WeaponsCollection.getAll().then((w) => (weapons.value = w));

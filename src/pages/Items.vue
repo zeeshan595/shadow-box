@@ -17,6 +17,7 @@ import ImportModal from "@/components/import-modal.vue";
 import EntryActions from "@/components/entry-actions.vue";
 import EntryContainer from "@/components/entry-container.vue";
 import Entry from "@/components/entry.vue";
+import { performSearch } from "@/services/search";
 
 const search = ref<string>("");
 const items = ref<WithUUID<Item>[]>([]);
@@ -24,10 +25,11 @@ const filteredItems = computed<WithUUID<Item>[]>(() => {
   if (search.value.trim() == "") {
     return items.value.sort((a, b) => a.name.localeCompare(b.name));
   }
-  const searchText = search.value.toLowerCase();
-  return items.value
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .filter((item) => item.name.toLowerCase().includes(searchText));
+
+  return performSearch(
+    search.value,
+    items.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 const isRandomModalShown = ref(false);
 const randomMagicItem = ref<Item>();

@@ -14,6 +14,7 @@ import { v4 } from "uuid";
 import EntryActions from "@/components/entry-actions.vue";
 import { DataType, sendToPlayers } from "@/services/owlbear";
 import { randomRange } from "@/services/helpers";
+import { performSearch } from "@/services/search";
 
 const ROLL_TABLES_PLACEHOLDER = `Appearance,Personality,Flaw
 Beautiful,Faithful,Sloth
@@ -25,7 +26,13 @@ Pale,Greedy,Paranoia
 const search = ref<string>("");
 const rollTables = ref<WithUUID<RollTable>[]>([]);
 const filteredRollTables = computed(() => {
-  return rollTables.value.sort((a, b) => a.name.localeCompare(b.name));
+  if (search.value === "") {
+    rollTables.value.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return performSearch(
+    search.value,
+    rollTables.value.sort((a, b) => a.name.localeCompare(b.name))
+  );
 });
 onMounted(() => {
   RollTablesCollection.getAll().then((r) => (rollTables.value = r));
