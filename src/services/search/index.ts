@@ -12,7 +12,7 @@ import { scoreArmor } from './armor';
 import { scoreRollTable } from './rollTable';
 
 function isSpell(entry: SearchTypes): entry is Spell {
-  return (entry as Spell).range !== undefined;
+  return (entry as Spell).tier !== undefined;
 }
 
 function isMonster(entry: SearchTypes): entry is Monster {
@@ -21,9 +21,9 @@ function isMonster(entry: SearchTypes): entry is Monster {
 
 function isItem(entry: SearchTypes): entry is Item {
   return (
-    (entry as Item).benefit !== undefined &&
-    (entry as Item).bonus !== undefined &&
-    (entry as Item).curse !== undefined &&
+    (entry as Item).benefit !== undefined ||
+    (entry as Item).bonus !== undefined ||
+    (entry as Item).curse !== undefined ||
     (entry as Item).personality !== undefined
   );
 }

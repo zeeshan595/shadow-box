@@ -23,6 +23,7 @@ const filteredWeapons = computed(() => {
   if (search.value === "") {
     return weapons.value.sort((a, b) => a.name.localeCompare(b.name));
   }
+
   return performSearch(
     search.value,
     weapons.value.sort((a, b) => a.name.localeCompare(b.name))
@@ -117,6 +118,7 @@ function onShareWeapon(weapon: WithUUID<Weapon>) {
     :show-reset="true"
     :show-upload="true"
     :show-download="true"
+    search-placeholder="club,1d4"
   />
   <EntryContainer :title="`weapons (${weapons.length})`">
     <Entry v-for="weapon in filteredWeapons">

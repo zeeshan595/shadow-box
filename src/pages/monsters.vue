@@ -191,6 +191,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-import="true"
     :show-upload="true"
     :show-download="true"
+    search-placeholder="fur,ape,13,4"
   />
   <EntryContainer :title="`monsters (${monsters.length})`">
     <Entry v-for="monster in filteredMonsters">

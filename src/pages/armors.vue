@@ -115,6 +115,7 @@ async function onUpload(data: any[] | null) {
     :show-reset="true"
     :show-upload="true"
     :show-download="true"
+    search-placeholder="11 + DEX,+2"
   />
   <EntryContainer>
     <Entry v-for="armor in filteredArmor">

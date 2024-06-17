@@ -167,6 +167,7 @@ watch(Owlbear.lastUpdatedAt, () => {
     :show-import="true"
     :show-upload="true"
     :show-download="true"
+    search-placeholder="+1 plate,disadvantage"
   />
   <Modal v-model="isCreateModalShown" title="Create Magic Item">
     <ItemEditComponent v-model="newMagicItem" />

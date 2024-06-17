@@ -11,15 +11,15 @@ export function scoreSpell(terms: string[], spell: Spell): number {
 
   let score = 0;
   for (const term of terms) {
-    if (name.startsWith(term) && term.length > 5) {
-      score += 10;
+    if (name.startsWith(term) && term.length > 3) {
+      score += term.length * 2;
     } else if (name.includes(term) && term.length > 3) {
       score += 5;
     }
 
     for (const classKey of classKeys) {
       if (classes[classKey] && spellClassToString({ [classKey]: true }) === term) {
-        score += 7;
+        score += 5;
       }
     }
 
