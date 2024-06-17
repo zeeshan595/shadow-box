@@ -11,7 +11,6 @@ const props = defineProps<{
   spaceBetween?: boolean;
   mobileView?: boolean;
   readonly?: boolean;
-  clickable?: boolean;
   placeholder?: "spell" | "monster" | "item" | string;
 }>();
 const emits = defineEmits<{
@@ -69,7 +68,6 @@ const placeholder = computed(() => {
       small: props.small,
       stat: props.stat,
       'justify-space-between': props.spaceBetween,
-      pointer: props.clickable,
     }"
     @click="leftClick"
   >

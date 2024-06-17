@@ -30,5 +30,5 @@ class Armors extends Collection<Armor> { }
 export const ArmorsCollection = new Armors(ARMOR_STORE);
 
 class RollTables extends Collection<RollTable> { }
-export const RollTablesCollection = new Spells(ROLL_TABLES_STORE);
+export const RollTablesCollection = new RollTables(ROLL_TABLES_STORE);
 

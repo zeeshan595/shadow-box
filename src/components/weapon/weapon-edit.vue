@@ -26,5 +26,5 @@ const value = computed<WithUUID<Weapon>>({
   <TextField label="type" v-model="value.type" />
   <TextField label="range" v-model="value.range" />
   <TextField label="damage" v-model="value.damage" />
-  <TextField label="properties" v-model="value.properties" />
+  <TextField large label="properties" v-model="value.properties" />
 </template>
