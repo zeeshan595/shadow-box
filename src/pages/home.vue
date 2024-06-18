@@ -7,12 +7,32 @@ import BasicGear from "@/components/basic-gear.vue";
 <template>
   <div>
     <div class="gap10 p20 flex-row flex-wrap">
-      <Button @click="() => router.push('/items')">Magic Items</Button>
-      <Button @click="() => router.push('/monsters')">Monsters</Button>
-      <Button @click="() => router.push('/spells')">Spells</Button>
-      <Button @click="() => router.push('/weapons')">Weapons</Button>
-      <Button @click="() => router.push('/armors')">Armor</Button>
-      <Button @click="() => router.push('/roll-tables')">roll tables</Button>
+      <Button class="gap5" @click="() => router.push('/items')">
+        <span class="material-symbols-outlined"> category </span>
+        Magic Items
+      </Button>
+      <Button class="gap5" @click="() => router.push('/monsters')">
+        <span class="material-symbols-outlined"> raven </span>
+        Monsters
+      </Button>
+      <Button class="gap5" @click="() => router.push('/spells')">
+        <span class="material-symbols-outlined"> neurology </span>
+        Spells
+      </Button>
+    </div>
+    <div class="gap10 flex-row flex-wrap">
+      <Button class="gap5" @click="() => router.push('/weapons')">
+        <span class="material-symbols-outlined"> swords </span>
+        Weapons
+      </Button>
+      <Button class="gap5" @click="() => router.push('/armors')">
+        <span class="material-symbols-outlined"> local_police </span>
+        Armor
+      </Button>
+      <Button class="gap5" @click="() => router.push('/roll-tables')">
+        <span class="material-symbols-outlined"> casino </span>
+        roll tables
+      </Button>
     </div>
     <BasicGear />
   </div>

@@ -112,6 +112,7 @@
   align-items: center;
   gap: 10px;
   max-width: 800px;
+  padding-top: 20px;
 
   .crawling-kit {
     padding-left: 40px;
