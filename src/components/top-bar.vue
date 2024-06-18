@@ -92,53 +92,41 @@ async function upload() {
 
 <template>
   <div
-    class="top-bar flex-row gap20 bg-default p20 justify-start"
+    class="top-bar flex-row gap10 bg-default p20 justify-start"
     :class="{ 'mobile-view': isMobileView }"
   >
-    <Button class="tooltip" @click="() => router.push('/')">
+    <div class="tooltip button" @click="() => router.push('/')">
       <span class="material-symbols-outlined"> arrow_back </span>
       <span class="tooltiptext"> back </span>
-    </Button>
-    <Button class="tooltip" @click="() => emits('add')" v-if="props.showAdd">
+    </div>
+    <div class="tooltip button" @click="() => emits('add')" v-if="props.showAdd">
       <span class="material-symbols-outlined"> add </span>
       <span class="tooltiptext"> create new </span>
-    </Button>
-    <Button
-      class="tooltip"
-      @click="() => emits('random')"
-      v-if="props.showRandom"
-    >
+    </div>
+    <div class="tooltip button" @click="() => emits('random')" v-if="props.showRandom">
       <span class="material-symbols-outlined"> casino </span>
       <span class="tooltiptext"> select random </span>
-    </Button>
-    <Button
-      class="tooltip"
-      @click="() => emits('reset')"
-      v-if="props.showReset"
-    >
+    </div>
+    <div class="tooltip button" @click="() => emits('reset')" v-if="props.showReset">
       <span class="material-symbols-outlined"> delete_history </span>
       <span class="tooltiptext">reset to default</span>
-    </Button>
-    <Button class="tooltip" @click="() => emits('delete')">
+    </div>
+    <div class="tooltip button" @click="() => emits('delete')">
       <span class="material-symbols-outlined"> delete </span>
       <span class="tooltiptext">delete all entries</span>
-    </Button>
-    <Button
-      class="tooltip"
-      @click="() => emits('import')"
-      v-if="props.showImport"
-    >
+    </div>
+    <div class="tooltip button" @click="() => emits('import')" v-if="props.showImport">
       <span class="material-symbols-outlined"> picture_as_pdf </span>
       <span class="tooltiptext">import pdf</span>
-    </Button>
-    <Button class="tooltip" @click="upload" v-if="props.showUpload">
+    </div>
+    <div class="tooltip button" @click="upload" v-if="props.showUpload">
       <span class="material-symbols-outlined"> upload </span>
       <span class="tooltiptext">upload json</span>
-    </Button>
-    <Button class="tooltip" @click="download" v-if="props.showDownload">
+    </div>
+    <div class="tooltip button" @click="download" v-if="props.showDownload">
       <span class="material-symbols-outlined"> download </span>
       <span class="tooltiptext">download json</span>
-    </Button>
+    </div>
     <Search
       :modelValue="props.modelValue"
       @update:modelValue="(val) => emits('update:modelValue', val)"
@@ -153,6 +141,16 @@ async function upload() {
   top: 0;
   box-shadow: 0 2px 3px 1px rgba(0, 0, 0, 0.3);
   z-index: 100;
+
+  .button {
+    flex-shrink: 1;
+    flex-basis: 0;
+    max-width: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+  }
 }
 .mobile-view {
   position: relative;
