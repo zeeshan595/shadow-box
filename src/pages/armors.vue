@@ -111,7 +111,7 @@ async function onDeleteAll() {
     <Button @click="onEditFinish">Save Armor</Button>
   </Modal>
   <Modal v-model="showRandomArmor" title="Random Armor">
-    <ArmorComponent v-if=randomArmor :model-value="randomArmor" />
+    <ArmorComponent v-if="randomArmor" :model-value="randomArmor" />
   </Modal>
   <TopBar
     v-model="search"
@@ -129,7 +129,7 @@ async function onDeleteAll() {
     :show-delete="true"
     search-placeholder="11 + DEX,+2"
   />
-  <EntryContainer>
+  <EntryContainer :title="`Armor (${armors.length})`">
     <Entry v-for="armor in filteredArmor">
       <EntryActions
         @edit="() => onEdit(armor)"
