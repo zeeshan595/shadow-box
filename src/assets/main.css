@@ -205,4 +205,5 @@ div {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+  text-transform: capitalize;
 }
