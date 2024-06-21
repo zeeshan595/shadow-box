@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { RouterView } from "vue-router";
 import { theme } from "./theme";
 import "./services/db/index";
 import { windowWidth } from "./const";
+import Modal from "./components/modal.vue";
+import Checkbox from "./components/checkbox.vue";
+import { players, sendToPlayersEnd, shareTriggered } from "./services/owlbear";
+import Button from "./components/button.vue";
 
 onMounted(() => {
   // set window width size to current window width
@@ -20,10 +24,41 @@ const styleVariables = computed(() => ({
   "--shadow": theme.value.shadow,
   "--primary-main": theme.value.primary.main,
 }));
+
+const showSharingModal = computed({
+  get() {
+    return shareTriggered.value !== null
+  },
+  set(value) {
+    if (value) return;
+    if (!value) shareTriggered.value = null;
+  }
+});
+const playersBeingShared = ref<boolean[]>([]);
+watch(players, (value) => {
+  playersBeingShared.value = new Array(value.length).fill(false);
+});
+
+async function triggerSendToPlayers() {
+  const playerIds = players.value
+    .filter((_, index) => playersBeingShared.value[index])
+    .map((player) => player.id);
+  await sendToPlayersEnd(playerIds);
+  shareTriggered.value = null;
+}
 </script>
 
 <template>
   <div :style="styleVariables">
+    <Modal v-model="showSharingModal" title="Sharing">
+      <Checkbox
+        v-for="(player, index) in players"
+        :model-value="playersBeingShared[index]"
+        @update:model-value="(val) => (playersBeingShared[index] = val)"
+        :label="player.name"
+      />
+      <Button @click="triggerSendToPlayers">Send</Button>
+    </Modal>
     <RouterView />
   </div>
 </template>
