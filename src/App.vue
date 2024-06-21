@@ -27,12 +27,12 @@ const styleVariables = computed(() => ({
 
 const showSharingModal = computed({
   get() {
-    return shareTriggered.value !== null
+    return shareTriggered.value !== null;
   },
   set(value) {
     if (value) return;
     if (!value) shareTriggered.value = null;
-  }
+  },
 });
 const playersBeingShared = ref<boolean[]>([]);
 watch(players, (value) => {
@@ -51,13 +51,19 @@ async function triggerSendToPlayers() {
 <template>
   <div :style="styleVariables">
     <Modal v-model="showSharingModal" title="Sharing">
-      <Checkbox
-        v-for="(player, index) in players"
-        :model-value="playersBeingShared[index]"
-        @update:model-value="(val) => (playersBeingShared[index] = val)"
-        :label="player.name"
-      />
-      <Button @click="triggerSendToPlayers">Send</Button>
+      <span v-if="players.length === 0">
+        There is no one else in the party besides you. Invite other people to
+        the room to share.
+      </span>
+      <template v-else>
+        <Checkbox
+          v-for="(player, index) in players"
+          :model-value="playersBeingShared[index]"
+          @update:model-value="(val) => (playersBeingShared[index] = val)"
+          :label="player.name"
+        />
+        <Button @click="triggerSendToPlayers">Send</Button>
+      </template>
     </Modal>
     <RouterView />
   </div>
