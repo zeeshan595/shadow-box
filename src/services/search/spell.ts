@@ -46,6 +46,12 @@ export function scoreSpell(terms: string[], spell: Spell): number {
         score += 1;
       }
     }
+
+    if (name.includes(term)) {
+      score += 1;
+    } else if (text.includes(term)) {
+      score += 1;
+    }
   }
   return score;
 }

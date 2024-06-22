@@ -7,7 +7,7 @@ export function scoreRollTable(terms: string[], rollTable: RollTable): number {
   for (const term of terms) {
     if (name.startsWith(term) && term.length > 3) {
       score += term.length * 2;
-    } else if (name.includes(term)) {
+    } else if (name.includes(term) && term.length > 3) {
       score += 5;
     }
 

@@ -31,6 +31,20 @@ export function scoreItem(terms: string[], item: Item): number {
     if (personality && personality.includes(term) && term.length > 3) {
       score += 3;
     }
+
+    if (name.includes(term)) {
+      score += 1;
+    } else if (bonus?.includes(term)) {
+      score += 1;
+    } else if (benefit?.includes(term)) {
+      score += 1;
+    } else if (curse?.includes(term)) {
+      score += 1;
+    } else if (personality?.includes(term)) {
+      score += 1;
+    } else if (flavourText.includes(term)) {
+      score += 0.5;
+    }
   }
   return score;
 }

@@ -52,6 +52,12 @@ export function scoreMonster(terms: string[], monster: Monster): number {
         score += 2;
       }
     }
+
+    if (name.includes(term)) {
+      score += 1;
+    } else if (flavourText.includes(term)) {
+      score += 0.5;
+    }
   }
 
   return score;

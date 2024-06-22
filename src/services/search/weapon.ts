@@ -30,6 +30,12 @@ export function scoreWeapon(terms: string[], weapon: Weapon): number {
     if (damage === term) {
       score += 2;
     }
+
+    if (name.includes(term)) {
+      score += 1;
+    } else if (properties.includes(term)) {
+      score += 1;
+    }
   }
 
   return score;

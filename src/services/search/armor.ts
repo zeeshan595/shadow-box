@@ -27,6 +27,12 @@ export function scoreArmor(terms: string[], armor: Armor): number {
     if (properties.includes(term)) {
       score += 2;
     }
+
+    if (name.includes(term)) {
+      score += 1;
+    } else if (properties.includes(term)) {
+      score += 1;
+    }
   }
   return score;
 }
