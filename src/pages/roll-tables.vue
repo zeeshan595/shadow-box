@@ -28,7 +28,7 @@ const search = ref<string>("");
 const rollTables = ref<WithUUID<RollTable>[]>([]);
 const filteredRollTables = computed(() => {
   if (search.value === "") {
-    rollTables.value.sort((a, b) => a.name.localeCompare(b.name));
+    return rollTables.value.sort((a, b) => a.name.localeCompare(b.name));
   }
   return performSearch(
     search.value,
